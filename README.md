@@ -1,9 +1,9 @@
 # game
 First project for CompSci 308 Fall 2015
 
-Name:
+Name: Connor Usry
 
-Date started:
+Date started: Thursday August 27, 2015
 
 Date finished:
 
