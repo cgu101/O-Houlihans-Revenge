@@ -9,9 +9,12 @@ Date finished:
 
 Hours worked:
 
-Resources used:
+Resources used: 
+    1) Oracle Javafx Docs
+    2) Stack Overflow
 
 Main class file:
+    -Main.java
 
 Data (non Java) files needed:
 
