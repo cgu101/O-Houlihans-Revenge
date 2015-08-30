@@ -13,6 +13,8 @@ public class Main extends Application {
     public static final int SIZE = 500;
     private double MILLISECOND_DELAY;
     private double SECOND_DELAY;
+
+    private int lives;
     private Stage primaryStage;
 
 
@@ -38,7 +40,7 @@ public class Main extends Application {
     //sets scene to training level
     public void makeTrainingLevel() {
         TrainingLevel myTrainingLevel = new TrainingLevel();
-        Scene trainingLevelScene = myTrainingLevel.init(SIZE, SIZE);
+        Scene trainingLevelScene = myTrainingLevel.init(SIZE, SIZE, lives);
         setScene(trainingLevelScene);
     }
 
@@ -68,6 +70,7 @@ public class Main extends Application {
         VBox gameTypesVbox = new VBox(20);
         gameTypesVbox.setAlignment(Pos.CENTER);
         gameTypesVbox.getChildren().addAll(welcomeLbl, trainingButton, battleButton);
+        lives = 3;
 
         mainMenuPane.setCenter(gameTypesVbox);
         mainMenuPane.setBottom(quitButton);
