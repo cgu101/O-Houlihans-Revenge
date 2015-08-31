@@ -1,3 +1,7 @@
+package main.java;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -7,12 +11,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Main extends Application {
 
     public static final int SIZE = 500;
-    private double MILLISECOND_DELAY;
-    private double SECOND_DELAY;
+    private static final int FRAMES_PER_SECOND = 60;
+    private double MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
+    private double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
 
     private int lives;
     private Stage primaryStage;
@@ -32,23 +38,31 @@ public class Main extends Application {
     }
 
     //shows to proper scene
-    private void setScene(Scene currentScene) {
+    private void setScene(Scene currentScene, TrainingLevel level) {
         primaryStage.setScene(currentScene);
         primaryStage.show();
+
+        // sets the game's loop
+        KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY),
+                e -> level.step(SECOND_DELAY));
+        Timeline animation = new Timeline();
+        animation.setCycleCount(Timeline.INDEFINITE);
+        animation.getKeyFrames().add(frame);
+        animation.play();
     }
 
     //sets scene to training level
     public void makeTrainingLevel() {
         TrainingLevel myTrainingLevel = new TrainingLevel();
         Scene trainingLevelScene = myTrainingLevel.init(SIZE, SIZE, lives);
-        setScene(trainingLevelScene);
+        setScene(trainingLevelScene, myTrainingLevel);
     }
 
     //sets scene to battle level
     public void makeBattleLevel() {
         BattleLevel myBattleLevel = new BattleLevel();
         Scene battleLevelScene = myBattleLevel.init(SIZE,SIZE);
-        setScene(battleLevelScene);
+        //setScene(battleLevelScene, );
     }
 
     //sets scene to main Menu
@@ -74,11 +88,12 @@ public class Main extends Application {
 
         mainMenuPane.setCenter(gameTypesVbox);
         mainMenuPane.setBottom(quitButton);
-
         mainMenuPane.setAlignment(quitButton, Pos.BOTTOM_RIGHT);
         mainMenuPane.setStyle("-fx-background-color: red;");
+
         Scene mainMenuScene = new Scene(mainMenuPane, SIZE, SIZE);
-        setScene(mainMenuScene);
+        primaryStage.setScene(mainMenuScene);
+        primaryStage.show();
     }
 
 
