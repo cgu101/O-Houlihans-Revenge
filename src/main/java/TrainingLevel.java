@@ -1,6 +1,7 @@
 package main.java;
 
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
@@ -28,30 +29,35 @@ import java.util.ArrayList;
 public class TrainingLevel {
     private int width;
     private int height;
+    private int startLives;
+    private Group root;
     private Scene myScene;
-    private ArrayList<Circle> myLives;
+    private HBox myLivesHBox;
     private Dodgeballer myPlayer;
     private ImageView myPlayerIV;
 
-    private Dodgeballer villainPlayer;
-    private ImageView villainPlayerIV;
+    private PatchesDodgeballer patchesPlayer;
+    private ImageView patchesPlayerIV;
+    private Circle patchesBall;
 
     private Timeline clockTimeline;
     private IntegerProperty timeSeconds = new SimpleIntegerProperty(START_TIME);
 
     private static final Integer START_TIME = 120;
-    private static final Integer DEFAULT_SPEED = 15;
+    private static final Integer DEFAULT_MOVE_SPEED = 15;
+    private static final Integer DEFAULT_TOSS_SPEED = 17;
 
     public Scene init(int w, int h, int l){
         //initialize globals
         width = w;
         height = h;
-        setMyLives(l);
+        startLives = l;
         createHeroDodgeballer();
-        createVillianDodgeballer();
+        createPatchesDodgeballer();
+        setMyLivesHBox(startLives);
 
         //Create scene graph to organize scene
-        Group root = new Group();
+        root = new Group();
         //Create a scene to display shapes
         myScene = new Scene(root, width, height, Color.BISQUE);
 
@@ -67,7 +73,7 @@ public class TrainingLevel {
 
         //Order added to group
         VBox timerVbox = getTimerVbox();
-        root.getChildren().addAll(baseline, midline, midCirc, timerVbox, myPlayerIV, villainPlayerIV, getLivesHbox());
+        root.getChildren().addAll(baseline, midline, midCirc, timerVbox, myPlayerIV, patchesPlayerIV, myLivesHBox);
 
         //respond to input
         myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
@@ -75,37 +81,46 @@ public class TrainingLevel {
         return myScene;
     }
 
-    private void createHeroDodgeballer() {
-        Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/stand.png"));
-        myPlayer = new MyDodgeballer(myLives.size() ,DEFAULT_SPEED, new ImageView(stand));
-        myPlayer.getImageView().setX((.2 * width)  -myPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
-        myPlayer.getImageView().setY((.8 * height) - myPlayer.getImageView().getBoundsInLocal().getHeight() / 2);
-        myPlayerIV= myPlayer.getImageView();
-
-    }
-
-    private void createVillianDodgeballer() {
-        Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/patchesStand.png"));
-        villainPlayer = new VillainDodgeballer(myLives.size() ,DEFAULT_SPEED, new ImageView(stand));
-        villainPlayer.getImageView().setX((.8 * width) - villainPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
-        villainPlayer.getImageView().setY((.8 * height) - villainPlayer.getImageView().getBoundsInLocal().getHeight() / 2);
-        villainPlayerIV= villainPlayer.getImageView();
-    }
-
-
     public void step (double elapsedTime) {
         // update attributes
-        // ImageView myPlayerIV= myPlayer.getImageView();
-        // myPlayerIV.setX(myPlayerIV.getX() + 1000);
-        // myPlayer.setImageView(myPlayerIV);
-        // check for collisions
+
+        //Chance that patches throws a ball if no ball is in play
+        if(patchesBall == null){
+                if(patchesPlayer.tossBall()){
+                    patchesBall = new Circle(patchesPlayerIV.getX(),
+                                                patchesPlayerIV.getY(),
+                                                30,
+                                                Color.RED);
+                    root.getChildren().add(patchesBall);
+                }
+        } else {
+            patchesBall.setCenterX(patchesBall.getCenterX() - patchesPlayer.getTossSpeed());
+            // check for collisions
+            if(myPlayerIV.getBoundsInParent().intersects(patchesBall.getBoundsInParent())){
+                root.getChildren().removeAll(patchesBall, myLivesHBox);
+                patchesBall = null;
+                setMyLivesHBox(myLivesHBox.getChildren().size() - 1);
+                root.getChildren().add(myLivesHBox);
+                if(myLivesHBox.getChildren().size() == 0){
+                    Platform.exit();
+                }
+            } else {
+                if (patchesBall.getCenterX() + patchesBall.getBoundsInParent().getWidth() / 2 < 0) {
+                    patchesBall = null;
+                }
+            }
+        }
+
+
+        //If no lives kill program
+
         // with shapes, can check precisely
     }
 
     private void handleKeyInput (KeyCode code) {
         double xLoc = myPlayerIV.getX();
         double yLoc = myPlayerIV.getY();
-        double speed = myPlayer.getSpeed();
+        double speed = myPlayer.getMoveSpeed();
         switch (code) {
             case RIGHT:
                 if(xLoc + myPlayerIV.getBoundsInLocal().getWidth() < width / 2){
@@ -115,6 +130,9 @@ public class TrainingLevel {
                 //Check to see if crossed half court
                 break;
             case LEFT:
+                if(xLoc + myPlayerIV.getBoundsInLocal().getWidth() > width / 2){
+                    myPlayerIV.setX(xLoc - 10);
+                }
                 myPlayerIV.setX(xLoc - 10);
                 //Move Joe Left
                 //Make sure not too far out of window
@@ -147,21 +165,33 @@ public class TrainingLevel {
 //        myPlayerIV.setY(yLoc);
     }
 
-    private void setMyLives(int l) {
+    private void setMyLivesHBox(int l) {
         // TODO: Figure out why standard iter isn't working for circle
-        myLives = new ArrayList<>();
+        myLivesHBox = new HBox();
         for(int i = 0; i < l; i++){
             Circle life = new Circle(20, Color.RED);
-            myLives.add(life);
+            myLivesHBox.getChildren().add(life);
         }
-    }
-
-    private HBox getLivesHbox(){
-        HBox livesBox = new HBox();
-        livesBox.getChildren().addAll(myLives);
-        return livesBox;
 
     }
+
+    private void createHeroDodgeballer() {
+        Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/stand.png"));
+        myPlayer = new MyDodgeballer(startLives , DEFAULT_MOVE_SPEED, new ImageView(stand));
+        myPlayer.getImageView().setX((.2 * width)  -myPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
+        myPlayer.getImageView().setY((.8 * height) - myPlayer.getImageView().getBoundsInLocal().getHeight() / 2);
+        myPlayerIV= myPlayer.getImageView();
+
+    }
+
+    private void createPatchesDodgeballer() {
+        Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/patchesStand.png"));
+        patchesPlayer = new PatchesDodgeballer(0, DEFAULT_MOVE_SPEED, DEFAULT_TOSS_SPEED, new ImageView(stand));
+        patchesPlayer.getImageView().setX((.8 * width) - patchesPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
+        patchesPlayer.getImageView().setY((.8 * height) - patchesPlayer.getImageView().getBoundsInLocal().getHeight() / 2);
+        patchesPlayerIV= patchesPlayer.getImageView();
+    }
+
     //Add the countdown timer
     private VBox getTimerVbox() {
         Label timerLabel = new Label();

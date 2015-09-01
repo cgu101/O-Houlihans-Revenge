@@ -10,17 +10,25 @@ import javafx.scene.image.ImageView;
 public abstract class Dodgeballer {
 
     int lives;
-    int speed;
+    int moveSpeed;
+    int tossSpeed;
     ImageView imageView;
 
     public Dodgeballer() {}
 
-    abstract int getSpeed();
-    abstract void setSpeed(int speed);
-
     abstract int getLives();
     abstract void setLives(int lives);
 
+    abstract int getMoveSpeed();
+    abstract void setMoveSpeed(int moveSpeed);
+
+    abstract int getTossSpeed();
+    abstract void setTossSpeed(int tossSpeed);
+
+
     abstract ImageView getImageView();
     abstract void setImageView(ImageView imageView);
+
+
+
 }

@@ -7,16 +7,23 @@ import javafx.scene.image.ImageView;
  */
 public class VillainDodgeballer extends Dodgeballer {
     public VillainDodgeballer(int l, int s, ImageView i) {
-        setSpeed(s);
+        setMoveSpeed(s);
         setLives(l);
         setImageView(i);
     }
 
-    public int getSpeed(){
-        return this.speed;
+    public int getMoveSpeed(){
+        return this.moveSpeed;
     }
-    public void setSpeed(int speed){
-        this.speed = speed;
+    public void setMoveSpeed(int speed){
+        this.moveSpeed = speed;
+    }
+
+    int getTossSpeed() {
+        return this.tossSpeed;
+    }
+    void setTossSpeed(int tossSpeed) {
+        this.tossSpeed = tossSpeed;
     }
 
     public int getLives(){
@@ -33,4 +40,6 @@ public class VillainDodgeballer extends Dodgeballer {
     public void setImageView(ImageView imageView){
         this.imageView = imageView;
     }
+
+
 }
