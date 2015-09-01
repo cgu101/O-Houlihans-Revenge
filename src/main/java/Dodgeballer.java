@@ -11,16 +11,14 @@ public class Dodgeballer {
 
     private int lives;
     private int speed;
-    private Image image;
     private ImageView imageView;
 
     public Dodgeballer() {}
 
-    public Dodgeballer(int l, int s, Image i){
+    public Dodgeballer(int l, int s, ImageView i){
         setSpeed(s);
         setLives(l);
-        setImage(i);
-        setImageView(new ImageView(i));
+        setImageView(i);
     }
 
     public int getSpeed() {
@@ -37,14 +35,6 @@ public class Dodgeballer {
 
     public void setLives(int lives) {
         this.lives = lives;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
     }
 
     public ImageView getImageView() {

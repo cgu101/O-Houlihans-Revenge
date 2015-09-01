@@ -15,7 +15,9 @@ import javafx.util.Duration;
 
 public class Main extends Application {
 
-    public static final int SIZE = 500;
+    public static final int WIDTH_SIZE = 1200;
+    public static final int HEIGHT_SIZE = 600;
+
     private static final int FRAMES_PER_SECOND = 60;
     private double MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
     private double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
@@ -54,14 +56,14 @@ public class Main extends Application {
     //sets scene to training level
     public void makeTrainingLevel() {
         TrainingLevel myTrainingLevel = new TrainingLevel();
-        Scene trainingLevelScene = myTrainingLevel.init(SIZE, SIZE, lives);
+        Scene trainingLevelScene = myTrainingLevel.init(WIDTH_SIZE, HEIGHT_SIZE, lives);
         setScene(trainingLevelScene, myTrainingLevel);
     }
 
     //sets scene to battle level
     public void makeBattleLevel() {
         BattleLevel myBattleLevel = new BattleLevel();
-        Scene battleLevelScene = myBattleLevel.init(SIZE,SIZE);
+        Scene battleLevelScene = myBattleLevel.init(WIDTH_SIZE,HEIGHT_SIZE);
         //setScene(battleLevelScene, );
     }
 
@@ -91,7 +93,7 @@ public class Main extends Application {
         mainMenuPane.setAlignment(quitButton, Pos.BOTTOM_RIGHT);
         mainMenuPane.setStyle("-fx-background-color: red;");
 
-        Scene mainMenuScene = new Scene(mainMenuPane, SIZE, SIZE);
+        Scene mainMenuScene = new Scene(mainMenuPane, WIDTH_SIZE, HEIGHT_SIZE);
         primaryStage.setScene(mainMenuScene);
         primaryStage.show();
     }
