@@ -26,27 +26,13 @@ import java.util.ArrayList;
  * Created by connorusry on 8/29/15.
  */
 
-public class TrainingLevel {
-    private int width;
-    private int height;
-    private int startLives;
-    private Group root;
-    private Scene myScene;
-    private HBox myLivesHBox;
-    private Dodgeballer myPlayer;
-    private ImageView myPlayerIV;
+public class TrainingLevel extends Level {
 
     private PatchesDodgeballer patchesPlayer;
     private ImageView patchesPlayerIV;
     private Circle patchesBall;
 
-    private Timeline clockTimeline;
-    private IntegerProperty timeSeconds = new SimpleIntegerProperty(START_TIME);
-
-    private static final Integer START_TIME = 120;
-    private static final Integer DEFAULT_MOVE_SPEED = 15;
-    private static final Integer DEFAULT_TOSS_SPEED = 17;
-
+    @Override
     public Scene init(int w, int h, int l){
         //initialize globals
         width = w;
@@ -81,6 +67,7 @@ public class TrainingLevel {
         return myScene;
     }
 
+    @Override
     public void step (double elapsedTime) {
         // update attributes
 
@@ -117,25 +104,25 @@ public class TrainingLevel {
         // with shapes, can check precisely
     }
 
-    private void handleKeyInput (KeyCode code) {
+    @Override
+    protected void handleKeyInput(KeyCode code) {
         double xLoc = myPlayerIV.getX();
         double yLoc = myPlayerIV.getY();
-        double speed = myPlayer.getMoveSpeed();
+        double moveSpeed = myPlayer.getMoveSpeed();
         switch (code) {
             case RIGHT:
-                if(xLoc + myPlayerIV.getBoundsInLocal().getWidth() < width / 2){
-                    myPlayerIV.setX(xLoc + 10);
-                }
                 //Move Joe Right
                 //Check to see if crossed half court
+                if(xLoc + myPlayerIV.getBoundsInLocal().getWidth() + moveSpeed < width / 2){
+                    myPlayerIV.setX(xLoc + moveSpeed);
+                }
                 break;
             case LEFT:
-                if(xLoc + myPlayerIV.getBoundsInLocal().getWidth() > width / 2){
-                    myPlayerIV.setX(xLoc - 10);
-                }
-                myPlayerIV.setX(xLoc - 10);
                 //Move Joe Left
                 //Make sure not too far out of window
+                if(xLoc - moveSpeed > 0){
+                    myPlayerIV.setX(xLoc - moveSpeed);
+                }
                 break;
             case UP:
                 TranslateTransition translation = new TranslateTransition(Duration.millis(500), myPlayerIV);
@@ -157,7 +144,8 @@ public class TrainingLevel {
                 // do nothing
         }
     }
-    private void handleKeyRelease(KeyCode code) {
+    @Override
+    protected void handleKeyRelease(KeyCode code) {
 //        double xLoc = myPlayerIV.getX();
 //        double yLoc = myPlayerIV.getY();
 //        myPlayerIV.setImage(stand);
@@ -165,7 +153,8 @@ public class TrainingLevel {
 //        myPlayerIV.setY(yLoc);
     }
 
-    private void setMyLivesHBox(int l) {
+    @Override
+    protected void setMyLivesHBox(int l) {
         // TODO: Figure out why standard iter isn't working for circle
         myLivesHBox = new HBox();
         for(int i = 0; i < l; i++){
@@ -175,7 +164,8 @@ public class TrainingLevel {
 
     }
 
-    private void createHeroDodgeballer() {
+    @Override
+    protected void createHeroDodgeballer() {
         Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/stand.png"));
         myPlayer = new MyDodgeballer(startLives , DEFAULT_MOVE_SPEED, new ImageView(stand));
         myPlayer.getImageView().setX((.2 * width)  -myPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
@@ -184,7 +174,8 @@ public class TrainingLevel {
 
     }
 
-    private void createPatchesDodgeballer() {
+    @Override
+    protected void createPatchesDodgeballer() {
         Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/patchesStand.png"));
         patchesPlayer = new PatchesDodgeballer(0, DEFAULT_MOVE_SPEED, DEFAULT_TOSS_SPEED, new ImageView(stand));
         patchesPlayer.getImageView().setX((.8 * width) - patchesPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
@@ -193,7 +184,8 @@ public class TrainingLevel {
     }
 
     //Add the countdown timer
-    private VBox getTimerVbox() {
+    @Override
+    protected VBox getTimerVbox() {
         Label timerLabel = new Label();
         timerLabel.textProperty().bind(timeSeconds.asString());
         timerLabel.setTextFill(Color.BLACK);
