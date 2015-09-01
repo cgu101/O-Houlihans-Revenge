@@ -12,6 +12,7 @@ Hours worked:
 Resources used: 
     1) Oracle Javafx Docs
     2) Stack Overflow
+    3) ASG Teach
 
 Main class file:
     -Main.java

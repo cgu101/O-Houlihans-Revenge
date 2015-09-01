@@ -1,15 +1,19 @@
 package main.java;
 
-import javafx.animation.Interpolator;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -32,7 +36,11 @@ public class TrainingLevel {
     private Image stand;
     private Image duck;
 
-    private static final int DEFAULT_SPEED = 40;
+
+    private Timeline clockTimeline;
+    private IntegerProperty timeSeconds = new SimpleIntegerProperty(START_TIME);
+
+    private static final Integer START_TIME = 120;
 
     public Scene init(int w, int h, int l){
         //initialize globals
@@ -58,11 +66,12 @@ public class TrainingLevel {
         baseline.setFill(Color.ROSYBROWN);
 
         myPlayerIV = new ImageView(stand);
-        myPlayerIV.setX((.2 * width)/ - myPlayerIV.getBoundsInLocal().getWidth() / 2);
+        myPlayerIV.setX((.2 * width) / -myPlayerIV.getBoundsInLocal().getWidth() / 2);
         myPlayerIV.setY((.8 * height) - myPlayerIV.getBoundsInLocal().getHeight() / 2);
 
         //Order added to group
-        root.getChildren().addAll(baseline, midline, midCirc, myPlayerIV, getLivesHbox());
+        VBox timerVbox = getTimerVbox();
+        root.getChildren().addAll(baseline, midline, midCirc, timerVbox, myPlayerIV, getLivesHbox());
 
         //respond to input
         myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
@@ -77,7 +86,6 @@ public class TrainingLevel {
 //        ImageView myPlayerIV= myPlayer.getImageView();
 //        myPlayerIV.setX(myPlayerIV.getX() + 1000);
 //        myPlayer.setImageView(myPlayerIV);
-
         // check for collisions
         // with shapes, can check precisely
     }
@@ -87,7 +95,9 @@ public class TrainingLevel {
         double yLoc = myPlayerIV.getY();
         switch (code) {
             case RIGHT:
-                myPlayerIV.setX(xLoc + 10);
+                if(xLoc + myPlayerIV.getBoundsInLocal().getWidth() < width / 2){
+                    myPlayerIV.setX(xLoc + 10);
+                }
                 //Move Joe Right
                 //Check to see if crossed half court
                 break;
@@ -107,9 +117,9 @@ public class TrainingLevel {
                 break;
             case DOWN:
                 //Joe Ducks
-                myPlayerIV.setImage(duck);
-                myPlayerIV.setX(xLoc);
-                myPlayerIV.setY(yLoc);
+//                myPlayerIV.setImage(duck);
+//                myPlayerIV.setX(xLoc);
+//                myPlayerIV.setY(yLoc);
 
                 break;
             default:
@@ -138,5 +148,34 @@ public class TrainingLevel {
         livesBox.getChildren().addAll(lives);
         return livesBox;
 
+    }
+    //Add the countdown timer
+    private VBox getTimerVbox() {
+        Label timerLabel = new Label();
+        timerLabel.textProperty().bind(timeSeconds.asString());
+        timerLabel.setTextFill(Color.BLACK);
+        timerLabel.setStyle("-fx-font-size: 4em;");
+
+        Button button = new Button();
+        button.setText("Start Game!");
+        button.setOnAction(e -> {
+                    button.visibleProperty().set(false);
+                    timeSeconds.set(START_TIME);
+                    clockTimeline = new Timeline();
+                    clockTimeline.getKeyFrames().add(
+                            new KeyFrame(Duration.seconds(START_TIME + 1),
+                                    new KeyValue(timeSeconds, 0)));
+                    clockTimeline.playFromStart();
+                }
+        );
+
+        //Puts timer in Vbox
+        VBox vb = new VBox(20);
+        vb.setAlignment(Pos.CENTER);
+        vb.setPrefWidth(myScene.getWidth());
+        vb.getChildren().addAll(button, timerLabel);
+        vb.setLayoutY(30);
+
+        return vb;
     }
 }
