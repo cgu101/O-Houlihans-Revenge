@@ -2,7 +2,6 @@ package main.java;
 
 import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -14,34 +13,135 @@ import javafx.scene.layout.VBox;
  * Created by connorusry on 9/1/15.
  */
 public abstract class Level {
-    static final Integer START_TIME = 120;
-    static final Integer DEFAULT_MOVE_SPEED = 15;
-    static final Integer DEFAULT_TOSS_SPEED = 17;
-    int width;
-    int height;
-    int startLives;
-    Group root;
-    Scene myScene;
-    HBox myLivesHBox;
-    Dodgeballer myPlayer;
-    ImageView myPlayerIV;
-    Timeline clockTimeline;
-    IntegerProperty timeSeconds = new SimpleIntegerProperty(START_TIME);
+    private Integer myStartTime;
+    private Integer myMoveSpeed;
+    private Integer myTossSpeed;
+
+    private int myWidth;
+    private int myHeight;
+    private int myStartLives;
+    private Group myRoot;
+    private Scene myScene;
+    private HBox myLivesHBox;
+    private Dodgeballer myPlayer;
+    private ImageView myPlayerIV;
+    private Timeline myClockTimeline;
+    private IntegerProperty myTimeSeconds;
 
     abstract Scene init(int w, int h, int l);
 
     abstract void step(double elapsedTime);
 
-    protected abstract void handleKeyInput (KeyCode code);
+    abstract void handleKeyInput (KeyCode code);
 
-    protected abstract void handleKeyRelease(KeyCode code);
+    abstract void handleKeyRelease(KeyCode code);
 
-    protected abstract void setMyLivesHBox(int l);
+    abstract void setMyLivesHBox(int l);
 
-    protected abstract void createHeroDodgeballer();
+    abstract void createHeroDodgeballer();
 
-    protected abstract void createPatchesDodgeballer();
+    abstract void createPatchesDodgeballer();
 
-    //Add the countdown timer
-    protected abstract VBox getTimerVbox();
+    abstract VBox getTimerVbox();
+
+    public Integer getMyMoveSpeed() {
+        return myMoveSpeed;
+    }
+
+    public void setMyMoveSpeed(Integer myMoveSpeed) {
+        this.myMoveSpeed = myMoveSpeed;
+    }
+
+    public Integer getMyTossSpeed() {
+        return myTossSpeed;
+    }
+
+    public void setMyTossSpeed(Integer myTossSpeed) {
+        this.myTossSpeed = myTossSpeed;
+    }
+
+    public int getMyWidth() {
+        return myWidth;
+    }
+
+    public void setMyWidth(int myWidth) {
+        this.myWidth = myWidth;
+    }
+
+    public int getMyHeight() {
+        return myHeight;
+    }
+
+    public void setMyHeight(int myHeight) {
+        this.myHeight = myHeight;
+    }
+
+    public int getMyStartLives() {
+        return myStartLives;
+    }
+
+    public void setMyStartLives(int myStartLives) {
+        this.myStartLives = myStartLives;
+    }
+
+    public Group getMyRoot() {
+        return myRoot;
+    }
+
+    public void setMyRoot(Group myRoot) {
+        this.myRoot = myRoot;
+    }
+
+    public Scene getMyScene() {
+        return myScene;
+    }
+
+    public void setMyScene(Scene myScene) {
+        this.myScene = myScene;
+    }
+
+
+    public HBox getMyLivesHBox() {
+        return myLivesHBox;
+    }
+
+    public void setMyLivesHBox(HBox myLivesHBox){
+        this.myLivesHBox = myLivesHBox;
+    }
+
+    public Dodgeballer getMyPlayer() {
+        return myPlayer;
+    }
+
+    public void setMyPlayer(Dodgeballer myPlayer) {
+        this.myPlayer = myPlayer;
+    }
+
+    public ImageView getMyPlayerIV() {
+        return myPlayerIV;
+    }
+
+    public void setMyPlayerIV(ImageView myPlayerIV) {
+        this.myPlayerIV = myPlayerIV;
+    }
+
+    public Timeline getMyClockTimeline() {
+        return myClockTimeline;
+    }
+
+    public void setMyClockTimeline(Timeline myClockTimeline) {
+        this.myClockTimeline = myClockTimeline;
+    }
+
+    public Integer getMyStartTime() {
+        return myStartTime;
+    }
+
+    public void setMyStartTime(Integer myStartTime) {
+        this.myStartTime = myStartTime;
+    }
+
+    public void setMyTimeSeconds(int myTimeSeconds) {
+        this.myTimeSeconds.set(myTimeSeconds);
+    }
 }

@@ -2,7 +2,6 @@ package main.java;
 
 import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -19,8 +18,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
-import java.util.ArrayList;
-
 
 /**
  * Created by connorusry on 8/29/15.
@@ -35,42 +32,45 @@ public class TrainingLevel extends Level {
     @Override
     public Scene init(int w, int h, int l){
         //initialize globals
-        width = w;
-        height = h;
-        startLives = l;
+        setMyWidth(w);
+        setMyHeight(h);
+        setMyStartLives(l);
+        setMyStartTime(120);
+        setMyMoveSpeed(15);
+        setMyTossSpeed(17);
+
         createHeroDodgeballer();
         createPatchesDodgeballer();
-        setMyLivesHBox(startLives);
+        setMyLivesHBox(getMyStartLives());
 
         //Create scene graph to organize scene
-        root = new Group();
+        setMyRoot(new Group());
         //Create a scene to display shapes
-        myScene = new Scene(root, width, height, Color.BISQUE);
+        setMyScene(new Scene(getMyRoot(), getMyWidth(), getMyHeight(), Color.BISQUE));
 
         //Make some shapes and set properties
-        Line baseline = new Line(0, height*1/3,width,height*1/3);
+        Line baseline = new Line(0, getMyHeight()*1/3, getMyWidth(), getMyHeight()*1/3);
         baseline.setStrokeWidth(8);
-        Line midline = new Line(width/2, height*1/3, width/2, height);
+        Line midline = new Line(getMyWidth()/2, getMyHeight()*1/3, getMyWidth()/2, getMyHeight());
         midline.setStrokeWidth(8);
-        Circle midCirc = new Circle(width/2, height*2/3, 30);
+        Circle midCirc = new Circle(getMyWidth()/2, getMyHeight()*2/3, 30);
         midCirc.setStrokeWidth(6);
 
         baseline.setFill(Color.ROSYBROWN);
 
         //Order added to group
         VBox timerVbox = getTimerVbox();
-        root.getChildren().addAll(baseline, midline, midCirc, timerVbox, myPlayerIV, patchesPlayerIV, myLivesHBox);
+        getMyRoot().getChildren().addAll(baseline, midline, midCirc, timerVbox, getMyPlayerIV(), patchesPlayerIV, getMyLivesHBox());
 
         //respond to input
-        myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
-        myScene.setOnKeyReleased(e -> handleKeyRelease(e.getCode()));
-        return myScene;
+        getMyScene().setOnKeyPressed(e -> handleKeyInput(e.getCode()));
+        getMyScene().setOnKeyReleased(e -> handleKeyRelease(e.getCode()));
+        return getMyScene();
     }
 
     @Override
     public void step (double elapsedTime) {
         // update attributes
-
         //Chance that patches throws a ball if no ball is in play
         if(patchesBall == null){
                 if(patchesPlayer.tossBall()){
@@ -78,17 +78,17 @@ public class TrainingLevel extends Level {
                                                 patchesPlayerIV.getY(),
                                                 30,
                                                 Color.RED);
-                    root.getChildren().add(patchesBall);
+                    getMyRoot().getChildren().add(patchesBall);
                 }
         } else {
             patchesBall.setCenterX(patchesBall.getCenterX() - patchesPlayer.getTossSpeed());
             // check for collisions
-            if(myPlayerIV.getBoundsInParent().intersects(patchesBall.getBoundsInParent())){
-                root.getChildren().removeAll(patchesBall, myLivesHBox);
+            if(getMyPlayerIV().getBoundsInParent().intersects(patchesBall.getBoundsInParent())){
+                getMyRoot().getChildren().removeAll(patchesBall, getMyLivesHBox());
                 patchesBall = null;
-                setMyLivesHBox(myLivesHBox.getChildren().size() - 1);
-                root.getChildren().add(myLivesHBox);
-                if(myLivesHBox.getChildren().size() == 0){
+                setMyLivesHBox(getMyLivesHBox().getChildren().size() - 1);
+                getMyRoot().getChildren().add(getMyLivesHBox());
+                if(getMyLivesHBox().getChildren().size() == 0){
                     Platform.exit();
                 }
             } else {
@@ -106,32 +106,32 @@ public class TrainingLevel extends Level {
 
     @Override
     protected void handleKeyInput(KeyCode code) {
-        double xLoc = myPlayerIV.getX();
-        double yLoc = myPlayerIV.getY();
-        double moveSpeed = myPlayer.getMoveSpeed();
+        double xLoc = getMyPlayerIV().getX();
+        double yLoc = getMyPlayerIV().getY();
+        double moveSpeed = getMyPlayer().getMoveSpeed();
         switch (code) {
             case RIGHT:
                 //Move Joe Right
                 //Check to see if crossed half court
-                if(xLoc + myPlayerIV.getBoundsInLocal().getWidth() + moveSpeed < width / 2){
-                    myPlayerIV.setX(xLoc + moveSpeed);
+                if(xLoc + getMyPlayerIV().getBoundsInLocal().getWidth() + moveSpeed < getMyWidth() / 2){
+                    getMyPlayerIV().setX(xLoc + moveSpeed);
                 }
                 break;
             case LEFT:
                 //Move Joe Left
                 //Make sure not too far out of window
                 if(xLoc - moveSpeed > 0){
-                    myPlayerIV.setX(xLoc - moveSpeed);
+                    getMyPlayerIV().setX(xLoc - moveSpeed);
                 }
                 break;
             case UP:
-                if(yLoc - moveSpeed > height*1/3){
-                    myPlayerIV.setY(yLoc - moveSpeed);
+                if(yLoc - moveSpeed > getMyHeight() *1/3){
+                    getMyPlayerIV().setY(yLoc - moveSpeed);
                 }
                 break;
             case DOWN:
-                if(yLoc + moveSpeed + myPlayerIV.getBoundsInParent().getHeight()< height){
-                    myPlayerIV.setY(yLoc + moveSpeed);
+                if(yLoc + moveSpeed + getMyPlayerIV().getBoundsInParent().getHeight()< getMyHeight()){
+                    getMyPlayerIV().setY(yLoc + moveSpeed);
                 }
                 break;
             default:
@@ -150,10 +150,10 @@ public class TrainingLevel extends Level {
     @Override
     protected void setMyLivesHBox(int l) {
         // TODO: Figure out why standard iter isn't working for circle
-        myLivesHBox = new HBox();
+        setMyLivesHBox(new HBox());
         for(int i = 0; i < l; i++){
             Circle life = new Circle(20, Color.RED);
-            myLivesHBox.getChildren().add(life);
+            getMyLivesHBox().getChildren().add(life);
         }
 
     }
@@ -161,19 +161,19 @@ public class TrainingLevel extends Level {
     @Override
     protected void createHeroDodgeballer() {
         Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/stand.png"));
-        myPlayer = new MyDodgeballer(startLives , DEFAULT_MOVE_SPEED, new ImageView(stand));
-        myPlayer.getImageView().setX((.2 * width)  -myPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
-        myPlayer.getImageView().setY((.8 * height) - myPlayer.getImageView().getBoundsInLocal().getHeight() / 2);
-        myPlayerIV= myPlayer.getImageView();
+        setMyPlayer(new MyDodgeballer(getMyStartLives(), getMyMoveSpeed(), new ImageView(stand)));
+        getMyPlayer().getImageView().setX((.2 * getMyWidth())  - getMyPlayer().getImageView().getBoundsInLocal().getWidth() / 2);
+        getMyPlayer().getImageView().setY((.8 * getMyHeight()) - getMyPlayer().getImageView().getBoundsInLocal().getHeight() / 2);
+        setMyPlayerIV(getMyPlayer().getImageView());
 
     }
 
     @Override
     protected void createPatchesDodgeballer() {
         Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/patchesStand.png"));
-        patchesPlayer = new PatchesDodgeballer(0, DEFAULT_MOVE_SPEED, DEFAULT_TOSS_SPEED, new ImageView(stand));
-        patchesPlayer.getImageView().setX((.8 * width) - patchesPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
-        patchesPlayer.getImageView().setY((.8 * height) - patchesPlayer.getImageView().getBoundsInLocal().getHeight() / 2);
+        patchesPlayer = new PatchesDodgeballer(0, getMyMoveSpeed(), getMyTossSpeed(), new ImageView(stand));
+        patchesPlayer.getImageView().setX((.8 * getMyWidth()) - patchesPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
+        patchesPlayer.getImageView().setY((.8 * getMyHeight()) - patchesPlayer.getImageView().getBoundsInLocal().getHeight() / 2);
         patchesPlayerIV= patchesPlayer.getImageView();
     }
 
@@ -181,7 +181,7 @@ public class TrainingLevel extends Level {
     @Override
     protected VBox getTimerVbox() {
         Label timerLabel = new Label();
-        timerLabel.textProperty().bind(timeSeconds.asString());
+        timerLabel.textProperty().bind(new SimpleIntegerProperty(getMyStartTime()).asString());
         timerLabel.setTextFill(Color.BLACK);
         timerLabel.setStyle("-fx-font-size: 4em;");
 
@@ -189,19 +189,19 @@ public class TrainingLevel extends Level {
         button.setText("Start Game!");
         button.setOnAction(e -> {
                     button.visibleProperty().set(false);
-                    timeSeconds.set(START_TIME);
-                    clockTimeline = new Timeline();
-                    clockTimeline.getKeyFrames().add(
-                            new KeyFrame(Duration.seconds(START_TIME + 1),
-                                    new KeyValue(timeSeconds, 0)));
-                    clockTimeline.playFromStart();
+                    setMyTimeSeconds(getMyStartTime());
+                    setMyClockTimeline(new Timeline());
+                    getMyClockTimeline().getKeyFrames().add(
+                            new KeyFrame(Duration.seconds(getMyStartTime() + 1),
+                                    new KeyValue(new SimpleIntegerProperty(getMyStartTime()), 0)));
+                    getMyClockTimeline().playFromStart();
                 }
         );
 
         //Puts timer in Vbox
         VBox vb = new VBox(20);
         vb.setAlignment(Pos.CENTER);
-        vb.setPrefWidth(myScene.getWidth());
+        vb.setPrefWidth(getMyScene().getWidth());
         vb.getChildren().addAll(button, timerLabel);
         vb.setLayoutY(30);
 
