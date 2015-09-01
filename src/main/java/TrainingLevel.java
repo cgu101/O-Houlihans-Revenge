@@ -12,7 +12,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -30,25 +29,26 @@ public class TrainingLevel {
     private int width;
     private int height;
     private Scene myScene;
-    private ArrayList<Circle> lives;
+    private ArrayList<Circle> myLives;
     private Dodgeballer myPlayer;
     private ImageView myPlayerIV;
-    private Image stand;
-    private Image duck;
 
+    private Dodgeballer villainPlayer;
+    private ImageView villainPlayerIV;
 
     private Timeline clockTimeline;
     private IntegerProperty timeSeconds = new SimpleIntegerProperty(START_TIME);
 
     private static final Integer START_TIME = 120;
+    private static final Integer DEFAULT_SPEED = 15;
 
     public Scene init(int w, int h, int l){
         //initialize globals
         width = w;
         height = h;
-        setLives(l);
-        Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/stand.png"));
-        Image duck = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/duck.png"));
+        setMyLives(l);
+        createHeroDodgeballer();
+        createVillianDodgeballer();
 
         //Create scene graph to organize scene
         Group root = new Group();
@@ -65,13 +65,9 @@ public class TrainingLevel {
 
         baseline.setFill(Color.ROSYBROWN);
 
-        myPlayerIV = new ImageView(stand);
-        myPlayerIV.setX((.2 * width) / -myPlayerIV.getBoundsInLocal().getWidth() / 2);
-        myPlayerIV.setY((.8 * height) - myPlayerIV.getBoundsInLocal().getHeight() / 2);
-
         //Order added to group
         VBox timerVbox = getTimerVbox();
-        root.getChildren().addAll(baseline, midline, midCirc, timerVbox, myPlayerIV, getLivesHbox());
+        root.getChildren().addAll(baseline, midline, midCirc, timerVbox, myPlayerIV, villainPlayerIV, getLivesHbox());
 
         //respond to input
         myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
@@ -79,13 +75,29 @@ public class TrainingLevel {
         return myScene;
     }
 
+    private void createHeroDodgeballer() {
+        Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/stand.png"));
+        myPlayer = new MyDodgeballer(myLives.size() ,DEFAULT_SPEED, new ImageView(stand));
+        myPlayer.getImageView().setX((.2 * width)  -myPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
+        myPlayer.getImageView().setY((.8 * height) - myPlayer.getImageView().getBoundsInLocal().getHeight() / 2);
+        myPlayerIV= myPlayer.getImageView();
+
+    }
+
+    private void createVillianDodgeballer() {
+        Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/patchesStand.png"));
+        villainPlayer = new VillainDodgeballer(myLives.size() ,DEFAULT_SPEED, new ImageView(stand));
+        villainPlayer.getImageView().setX((.8 * width) - villainPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
+        villainPlayer.getImageView().setY((.8 * height) - villainPlayer.getImageView().getBoundsInLocal().getHeight() / 2);
+        villainPlayerIV= villainPlayer.getImageView();
+    }
 
 
     public void step (double elapsedTime) {
         // update attributes
-//        ImageView myPlayerIV= myPlayer.getImageView();
-//        myPlayerIV.setX(myPlayerIV.getX() + 1000);
-//        myPlayer.setImageView(myPlayerIV);
+        // ImageView myPlayerIV= myPlayer.getImageView();
+        // myPlayerIV.setX(myPlayerIV.getX() + 1000);
+        // myPlayer.setImageView(myPlayerIV);
         // check for collisions
         // with shapes, can check precisely
     }
@@ -93,6 +105,7 @@ public class TrainingLevel {
     private void handleKeyInput (KeyCode code) {
         double xLoc = myPlayerIV.getX();
         double yLoc = myPlayerIV.getY();
+        double speed = myPlayer.getSpeed();
         switch (code) {
             case RIGHT:
                 if(xLoc + myPlayerIV.getBoundsInLocal().getWidth() < width / 2){
@@ -134,18 +147,18 @@ public class TrainingLevel {
 //        myPlayerIV.setY(yLoc);
     }
 
-    private void setLives(int l) {
+    private void setMyLives(int l) {
         // TODO: Figure out why standard iter isn't working for circle
-        lives = new ArrayList<>();
+        myLives = new ArrayList<>();
         for(int i = 0; i < l; i++){
             Circle life = new Circle(20, Color.RED);
-            lives.add(life);
+            myLives.add(life);
         }
     }
 
     private HBox getLivesHbox(){
         HBox livesBox = new HBox();
-        livesBox.getChildren().addAll(lives);
+        livesBox.getChildren().addAll(myLives);
         return livesBox;
 
     }

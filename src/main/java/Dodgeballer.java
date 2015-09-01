@@ -7,42 +7,20 @@ import javafx.scene.image.ImageView;
 /**
  * Created by connorusry on 8/31/15.
  */
-public class Dodgeballer {
+public abstract class Dodgeballer {
 
-    private int lives;
-    private int speed;
-    private ImageView imageView;
+    int lives;
+    int speed;
+    ImageView imageView;
 
     public Dodgeballer() {}
 
-    public Dodgeballer(int l, int s, ImageView i){
-        setSpeed(s);
-        setLives(l);
-        setImageView(i);
-    }
+    abstract int getSpeed();
+    abstract void setSpeed(int speed);
 
-    public int getSpeed() {
-        return speed;
-    }
+    abstract int getLives();
+    abstract void setLives(int lives);
 
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
-
-    public int getLives() {
-        return lives;
-    }
-
-    public void setLives(int lives) {
-        this.lives = lives;
-    }
-
-    public ImageView getImageView() {
-        return imageView;
-    }
-
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
-    }
-
+    abstract ImageView getImageView();
+    abstract void setImageView(ImageView imageView);
 }
