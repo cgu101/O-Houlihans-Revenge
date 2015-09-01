@@ -63,7 +63,7 @@ public class Main extends Application {
     //sets scene to battle level
     public void makeBattleLevel() {
         BattleLevel myBattleLevel = new BattleLevel();
-        Scene battleLevelScene = myBattleLevel.init(WIDTH_SIZE,HEIGHT_SIZE);
+        //Scene battleLevelScene = myBattleLevel.init(WIDTH_SIZE,HEIGHT_SIZE);
         //setScene(battleLevelScene, );
     }
 

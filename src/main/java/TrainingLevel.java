@@ -125,20 +125,14 @@ public class TrainingLevel extends Level {
                 }
                 break;
             case UP:
-                TranslateTransition translation = new TranslateTransition(Duration.millis(500), myPlayerIV);
-                translation.interpolatorProperty().set(Interpolator.SPLINE(.1, .1, .7, .7));
-                translation.setByY(-50);
-                translation.setAutoReverse(true);
-                translation.setCycleCount(2);
-                translation.play();
-                //Joe Jumps
+                if(yLoc - moveSpeed > height*1/3){
+                    myPlayerIV.setY(yLoc - moveSpeed);
+                }
                 break;
             case DOWN:
-                //Joe Ducks
-//                myPlayerIV.setImage(duck);
-//                myPlayerIV.setX(xLoc);
-//                myPlayerIV.setY(yLoc);
-
+                if(yLoc + moveSpeed + myPlayerIV.getBoundsInParent().getHeight()< height){
+                    myPlayerIV.setY(yLoc + moveSpeed);
+                }
                 break;
             default:
                 // do nothing
