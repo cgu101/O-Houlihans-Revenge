@@ -35,17 +35,16 @@ public class TrainingLevel extends Level {
         setMyWidth(w);
         setMyHeight(h);
         setMyStartLives(l);
-        setMyStartTime(120);
+        setMyStartTime(150);
         setMyMoveSpeed(15);
         setMyTossSpeed(17);
 
         createHeroDodgeballer();
-        createPatchesDodgeballer();
+        createEnemyDodgeballer();
         setMyLivesHBox(getMyStartLives());
 
-        //Create scene graph to organize scene
+        //Create scene
         setMyRoot(new Group());
-        //Create a scene to display shapes
         setMyScene(new Scene(getMyRoot(), getMyWidth(), getMyHeight(), Color.BISQUE));
 
         //Make some shapes and set properties
@@ -59,8 +58,7 @@ public class TrainingLevel extends Level {
         baseline.setFill(Color.ROSYBROWN);
 
         //Order added to group
-        VBox timerVbox = getTimerVbox();
-        getMyRoot().getChildren().addAll(baseline, midline, midCirc, timerVbox, getMyPlayerIV(), patchesPlayerIV, getMyLivesHBox());
+        getMyRoot().getChildren().addAll(baseline, midline, midCirc, getTimerVbox(), getMyPlayerIV(), patchesPlayerIV, getMyLivesHBox());
 
         //respond to input
         getMyScene().setOnKeyPressed(e -> handleKeyInput(e.getCode()));
@@ -81,7 +79,7 @@ public class TrainingLevel extends Level {
                     getMyRoot().getChildren().add(patchesBall);
                 }
         } else {
-            patchesBall.setCenterX(patchesBall.getCenterX() - patchesPlayer.getTossSpeed());
+            patchesBall.setCenterX(patchesBall.getCenterX() - patchesPlayer.getMyTossSpeed());
             // check for collisions
             if(getMyPlayerIV().getBoundsInParent().intersects(patchesBall.getBoundsInParent())){
                 getMyRoot().getChildren().removeAll(patchesBall, getMyLivesHBox());
@@ -97,18 +95,13 @@ public class TrainingLevel extends Level {
                 }
             }
         }
-
-
-        //If no lives kill program
-
-        // with shapes, can check precisely
     }
 
     @Override
     protected void handleKeyInput(KeyCode code) {
         double xLoc = getMyPlayerIV().getX();
         double yLoc = getMyPlayerIV().getY();
-        double moveSpeed = getMyPlayer().getMoveSpeed();
+        double moveSpeed = getMyPlayer().getMyMoveSpeed();
         switch (code) {
             case RIGHT:
                 //Move Joe Right
@@ -162,19 +155,19 @@ public class TrainingLevel extends Level {
     protected void createHeroDodgeballer() {
         Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/stand.png"));
         setMyPlayer(new MyDodgeballer(getMyStartLives(), getMyMoveSpeed(), new ImageView(stand)));
-        getMyPlayer().getImageView().setX((.2 * getMyWidth())  - getMyPlayer().getImageView().getBoundsInLocal().getWidth() / 2);
-        getMyPlayer().getImageView().setY((.8 * getMyHeight()) - getMyPlayer().getImageView().getBoundsInLocal().getHeight() / 2);
-        setMyPlayerIV(getMyPlayer().getImageView());
+        getMyPlayer().getMyImageView().setX((.2 * getMyWidth())  - getMyPlayer().getMyImageView().getBoundsInLocal().getWidth() / 2);
+        getMyPlayer().getMyImageView().setY((.8 * getMyHeight()) - getMyPlayer().getMyImageView().getBoundsInLocal().getHeight() / 2);
+        setMyPlayerIV(getMyPlayer().getMyImageView());
 
     }
 
     @Override
-    protected void createPatchesDodgeballer() {
+    protected void createEnemyDodgeballer() {
         Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/patchesStand.png"));
         patchesPlayer = new PatchesDodgeballer(0, getMyMoveSpeed(), getMyTossSpeed(), new ImageView(stand));
-        patchesPlayer.getImageView().setX((.8 * getMyWidth()) - patchesPlayer.getImageView().getBoundsInLocal().getWidth() / 2);
-        patchesPlayer.getImageView().setY((.8 * getMyHeight()) - patchesPlayer.getImageView().getBoundsInLocal().getHeight() / 2);
-        patchesPlayerIV= patchesPlayer.getImageView();
+        patchesPlayer.getMyImageView().setX((.8 * getMyWidth()) - patchesPlayer.getMyImageView().getBoundsInLocal().getWidth() / 2);
+        patchesPlayer.getMyImageView().setY((.8 * getMyHeight()) - patchesPlayer.getMyImageView().getBoundsInLocal().getHeight() / 2);
+        patchesPlayerIV= patchesPlayer.getMyImageView();
     }
 
     //Add the countdown timer
@@ -189,7 +182,7 @@ public class TrainingLevel extends Level {
         button.setText("Start Game!");
         button.setOnAction(e -> {
                     button.visibleProperty().set(false);
-                    setMyTimeSeconds(getMyStartTime());
+                    setMyTimeSeconds(new SimpleIntegerProperty(getMyStartTime()));
                     setMyClockTimeline(new Timeline());
                     getMyClockTimeline().getKeyFrames().add(
                             new KeyFrame(Duration.seconds(getMyStartTime() + 1),
@@ -208,3 +201,7 @@ public class TrainingLevel extends Level {
         return vb;
     }
 }
+
+
+//timeseconds =  SimpleIntegerProperty (START_TIME)
+//start time = Integer

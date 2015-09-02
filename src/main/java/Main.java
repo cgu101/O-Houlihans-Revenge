@@ -40,7 +40,7 @@ public class Main extends Application {
     }
 
     //shows to proper scene
-    private void setScene(Scene currentScene, TrainingLevel level) {
+    private void setScene(Scene currentScene, Level level) {
         primaryStage.setScene(currentScene);
         primaryStage.show();
 
@@ -63,8 +63,8 @@ public class Main extends Application {
     //sets scene to battle level
     public void makeBattleLevel() {
         BattleLevel myBattleLevel = new BattleLevel();
-        //Scene battleLevelScene = myBattleLevel.init(WIDTH_SIZE,HEIGHT_SIZE);
-        //setScene(battleLevelScene, );
+        Scene battleLevelScene = myBattleLevel.init(WIDTH_SIZE,HEIGHT_SIZE, lives);
+        setScene(battleLevelScene, myBattleLevel);
     }
 
     //sets scene to main Menu

@@ -10,39 +10,10 @@ import java.util.Random;
 public class PatchesDodgeballer extends Dodgeballer {
 
     public PatchesDodgeballer(int l, int ms, int ts, ImageView i) {
-        setLives(l);
-        setMoveSpeed(ms);
-        setTossSpeed(ts);
-        setImageView(i);
-    }
-
-
-    public int getLives(){
-        return this.lives;
-    }
-    public void setLives(int lives){
-        this.lives = lives;
-    }
-
-    public int getMoveSpeed(){
-        return this.moveSpeed;
-    }
-    public void setMoveSpeed(int moveSpeed){
-        this.moveSpeed = moveSpeed;
-    }
-
-    public int getTossSpeed(){
-        return this.tossSpeed;
-    }
-    public void setTossSpeed(int tossSpeed){
-        this.tossSpeed = tossSpeed;
-    }
-
-    public ImageView getImageView(){
-        return this.imageView;
-    }
-    public void setImageView(ImageView imageView){
-        this.imageView = imageView;
+        setMyLives(l);
+        setMyMoveSpeed(ms);
+        setMyTossSpeed(ts);
+        setMyImageView(i);
     }
 
     public boolean tossBall(){
@@ -52,4 +23,6 @@ public class PatchesDodgeballer extends Dodgeballer {
         }
         return false;
     }
+
+
 }

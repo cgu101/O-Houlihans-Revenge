@@ -40,7 +40,7 @@ public abstract class Level {
 
     abstract void createHeroDodgeballer();
 
-    abstract void createPatchesDodgeballer();
+    abstract void createEnemyDodgeballer();
 
     abstract VBox getTimerVbox();
 
@@ -141,7 +141,12 @@ public abstract class Level {
         this.myStartTime = myStartTime;
     }
 
-    public void setMyTimeSeconds(int myTimeSeconds) {
-        this.myTimeSeconds.set(myTimeSeconds);
+    public void setMyTimeSeconds(IntegerProperty myTimeSeconds) {
+        this.myTimeSeconds = myTimeSeconds;
+    }
+
+
+    public IntegerProperty getMyTimeSeconds() {
+        return myTimeSeconds;
     }
 }

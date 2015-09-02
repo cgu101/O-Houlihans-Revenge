@@ -1,7 +1,5 @@
 package main.java;
 
-import javafx.scene.Node;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
@@ -9,26 +7,53 @@ import javafx.scene.image.ImageView;
  */
 public abstract class Dodgeballer {
 
-    int lives;
-    int moveSpeed;
-    int tossSpeed;
-    ImageView imageView;
+    private int myLives;
+    private int myMoveSpeed;
+    private int myTossSpeed;
+    private ImageView myImageView;
+    private boolean myHoldingBall;
+
 
     public Dodgeballer() {}
 
-    abstract int getLives();
-    abstract void setLives(int lives);
 
-    abstract int getMoveSpeed();
-    abstract void setMoveSpeed(int moveSpeed);
+    public int getMyLives() {
+        return myLives;
+    }
 
-    abstract int getTossSpeed();
-    abstract void setTossSpeed(int tossSpeed);
+    public void setMyLives(int myLives) {
+        this.myLives = myLives;
+    }
 
+    public int getMyMoveSpeed() {
+        return myMoveSpeed;
+    }
 
-    abstract ImageView getImageView();
-    abstract void setImageView(ImageView imageView);
+    public void setMyMoveSpeed(int myMoveSpeed) {
+        this.myMoveSpeed = myMoveSpeed;
+    }
 
+    public int getMyTossSpeed() {
+        return myTossSpeed;
+    }
 
+    public void setMyTossSpeed(int myTossSpeed) {
+        this.myTossSpeed = myTossSpeed;
+    }
 
+    public ImageView getMyImageView() {
+        return myImageView;
+    }
+
+    public void setMyImageView(ImageView myImageView) {
+        this.myImageView = myImageView;
+    }
+
+    public boolean isMyHoldingBall() {
+        return myHoldingBall;
+    }
+
+    public void setMyHoldingBall(boolean myHoldingBall) {
+        this.myHoldingBall = myHoldingBall;
+    }
 }
