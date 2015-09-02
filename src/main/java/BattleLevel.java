@@ -15,11 +15,15 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
+import java.lang.reflect.Array;
+
 /**
  * Created by connorusry on 8/30/15.
  */
 public class BattleLevel extends Level{
 
+    private VillainDodgeballer villainPlayer;
+    private ImageView villainPlayerIV;
     private boolean ducking;
 
     @Override
@@ -47,7 +51,7 @@ public class BattleLevel extends Level{
 
         baseline.setFill(Color.ROSYBROWN);
 
-        getMyRoot().getChildren().addAll(baseline, midline, midCirc, getMyPlayerIV(), getMyLivesHBox());
+        getMyRoot().getChildren().addAll(baseline, midline, midCirc, getMyPlayerIV(), villainPlayerIV, getMyLivesHBox());
 
         //respond to input
         getMyScene().setOnKeyPressed(e -> handleKeyInput(e.getCode()));
@@ -149,7 +153,11 @@ public class BattleLevel extends Level{
 
     @Override
     protected void createEnemyDodgeballer() {
-
+        Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/villainStand.png"));
+        villainPlayer = new VillainDodgeballer(0, getMyMoveSpeed(), getMyTossSpeed(), new ImageView(stand));
+        villainPlayer.getMyImageView().setX(getMyWidth() - villainPlayer.getMyImageView().getBoundsInLocal().getWidth());
+        villainPlayer.getMyImageView().setY((.6 * getMyHeight()) - villainPlayer.getMyImageView().getBoundsInLocal().getHeight() / 2);
+        villainPlayerIV= villainPlayer.getMyImageView();
     }
 
     @Override

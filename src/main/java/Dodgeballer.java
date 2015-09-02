@@ -11,7 +11,7 @@ public abstract class Dodgeballer {
     private int myMoveSpeed;
     private int myTossSpeed;
     private ImageView myImageView;
-    private boolean myHoldingBall;
+    private boolean holdingBall;
 
 
     public Dodgeballer() {}
@@ -49,11 +49,11 @@ public abstract class Dodgeballer {
         this.myImageView = myImageView;
     }
 
-    public boolean isMyHoldingBall() {
-        return myHoldingBall;
+    public boolean isHoldingBall() {
+        return holdingBall;
     }
 
-    public void setMyHoldingBall(boolean myHoldingBall) {
-        this.myHoldingBall = myHoldingBall;
+    public void setHoldingBall(boolean holdingBall) {
+        this.holdingBall = holdingBall;
     }
 }
