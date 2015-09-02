@@ -1,6 +1,7 @@
 package main.java;
 
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.beans.property.IntegerProperty;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -27,6 +28,7 @@ public abstract class Level {
     private ImageView myPlayerIV;
     private Timeline myClockTimeline;
     private IntegerProperty myTimeSeconds;
+    private TranslateTransition jumpTransition;
 
     abstract Scene init(int w, int h, int l);
 
@@ -148,5 +150,13 @@ public abstract class Level {
 
     public IntegerProperty getMyTimeSeconds() {
         return myTimeSeconds;
+    }
+
+    public TranslateTransition getJumpTransition() {
+        return jumpTransition;
+    }
+
+    public void setJumpTransition(TranslateTransition jumpTransition) {
+        this.jumpTransition = jumpTransition;
     }
 }

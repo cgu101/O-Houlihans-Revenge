@@ -1,5 +1,6 @@
 package main.java;
 
+import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
@@ -18,6 +19,8 @@ import javafx.util.Duration;
  * Created by connorusry on 8/30/15.
  */
 public class BattleLevel extends Level{
+
+    private boolean ducking;
 
     @Override
     Scene init(int w, int h, int l) {
@@ -48,6 +51,7 @@ public class BattleLevel extends Level{
 
         //respond to input
         getMyScene().setOnKeyPressed(e -> handleKeyInput(e.getCode()));
+        getMyScene().setOnKeyReleased(e -> handleKeyRelease(e.getCode()));
         return getMyScene();
     }
 
@@ -59,46 +63,67 @@ public class BattleLevel extends Level{
     @Override
     protected void handleKeyInput(KeyCode code) {
         double xLoc = getMyPlayerIV().getX();
+        double yLoc = getMyPlayerIV().getY();
+        double yLocBottom = yLoc + getMyPlayerIV().getBoundsInParent().getHeight()/2;
         double moveSpeed = getMyPlayer().getMyMoveSpeed();
         switch (code) {
             case RIGHT:
-                //Move Joe Right
-                //Check to see if crossed half court
-                if(xLoc + getMyPlayerIV().getBoundsInLocal().getWidth() + moveSpeed < getMyWidth() / 2){
+                //Check to see if crossed half court or ducking
+                if(xLoc + getMyPlayerIV().getBoundsInLocal().getWidth() + moveSpeed < getMyWidth() / 2 && !isDucking()){
                     getMyPlayerIV().setX(xLoc + moveSpeed);
                 }
                 break;
             case LEFT:
-                //Move Joe Left
-                //Make sure not too far out of window
-                if(xLoc - moveSpeed > 0){
+                //Make sure not too far out of window or ducking
+                if(xLoc - moveSpeed > 0 && !isDucking()){
                     getMyPlayerIV().setX(xLoc - moveSpeed);
                 }
                 break;
             case UP:
-                //Joe Jumps
-                TranslateTransition translation = new TranslateTransition(Duration.millis(500), getMyPlayerIV());
-                translation.interpolatorProperty().set(Interpolator.SPLINE(.1, .1, .7, .7));
-                translation.setByY(-50);
-                translation.setAutoReverse(true);
-                translation.setCycleCount(2);
-                translation.play();
+                //Joe Jumps, prevents jump if already in the middle of one
+                if(getJumpTransition() == null || getJumpTransition().getStatus() == Animation.Status.STOPPED) {
+                    setJumpTransition(new TranslateTransition(Duration.millis(300), getMyPlayerIV()));
+                    getJumpTransition().interpolatorProperty().set(Interpolator.SPLINE(.1, .1, .7, .7));
+                    getJumpTransition().setByY(-getMyPlayerIV().getY()/2);
+                    getJumpTransition().setAutoReverse(true);
+                    getJumpTransition().setCycleCount(2);
+                    getJumpTransition().play();
+                }
                 break;
             case DOWN:
-                //Joe Ducks
-//                myPlayerIV.setImage(duck);
-//                myPlayerIV.setX(xLoc);
-//                myPlayerIV.setY(yLoc);
-
+                //Prevents "duck" if already ducking
+                if(!isDucking()) {
+                    getMyRoot().getChildren().removeAll(getMyPlayerIV());
+                    Image duck = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/duck.png"));
+                    setMyPlayer(new MyDodgeballer(getMyStartLives(), getMyMoveSpeed(), new ImageView(duck)));
+                    setMyPlayerIV(getMyPlayer().getMyImageView());
+                    getMyPlayer().getMyImageView().setX(xLoc);
+                    getMyPlayer().getMyImageView().setY(yLocBottom);
+                    getMyRoot().getChildren().add(getMyPlayerIV());
+                    setDucking(true);
+                }
                 break;
             default:
-                // do nothing
         }
     }
 
     @Override
     protected void handleKeyRelease(KeyCode code) {
-
+        double xLoc = getMyPlayerIV().getX();
+        double yLoc = getMyPlayerIV().getY();
+        switch (code) {
+            case DOWN:
+                getMyRoot().getChildren().removeAll(getMyPlayerIV());
+                Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/stand.png"));
+                setMyPlayer(new MyDodgeballer(getMyStartLives(), getMyMoveSpeed(), new ImageView(stand)));
+                getMyPlayer().getMyImageView().setX(xLoc);
+                getMyPlayer().getMyImageView().setY((.6 * getMyHeight()) - getMyPlayer().getMyImageView().getBoundsInLocal().getHeight() / 2);
+                setMyPlayerIV(getMyPlayer().getMyImageView());
+                getMyRoot().getChildren().add(getMyPlayerIV());
+                setDucking(false);
+                break;
+            default:
+        }
     }
 
     @Override
@@ -130,5 +155,13 @@ public class BattleLevel extends Level{
     @Override
     protected VBox getTimerVbox() {
         return null;
+    }
+
+    public boolean isDucking() {
+        return ducking;
+    }
+
+    public void setDucking(boolean ducking) {
+        this.ducking = ducking;
     }
 }
