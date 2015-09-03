@@ -27,7 +27,7 @@ public class TrainingLevel extends Level {
 
     private PatchesDodgeballer patchesPlayer;
     private ImageView patchesPlayerIV;
-    private Circle patchesBall;
+    private Dodgeball patchesBall;
 
     @Override
     public Scene init(int w, int h, int l){
@@ -36,8 +36,8 @@ public class TrainingLevel extends Level {
         setMyHeight(h);
         setMyStartLives(l);
         setMyStartTime(150);
-        setMyMoveSpeed(15);
-        setMyTossSpeed(17);
+        setMyMoveSpeed(20);
+        setMyTossSpeed(5);
 
         createHeroDodgeballer();
         createEnemyDodgeballer();
@@ -72,14 +72,17 @@ public class TrainingLevel extends Level {
         //Chance that patches throws a ball if no ball is in play
         if(patchesBall == null){
                 if(patchesPlayer.tossBall()){
-                    patchesBall = new Circle(patchesPlayerIV.getX(),
+                    patchesBall = new Dodgeball(patchesPlayerIV.getX(),
                                                 patchesPlayerIV.getY(),
+                                                getMyPlayerIV().getX(),
+                                                getMyPlayerIV().getY(),
                                                 30,
                                                 Color.RED);
                     getMyRoot().getChildren().add(patchesBall);
                 }
         } else {
             patchesBall.setCenterX(patchesBall.getCenterX() - patchesPlayer.getMyTossSpeed());
+            patchesBall.setCenterY(patchesBall.getCenterX() * patchesBall.getTrajectorySlope() + patchesBall.getTrajectoryYIntercept());
             // check for collisions
             if(getMyPlayerIV().getBoundsInParent().intersects(patchesBall.getBoundsInParent())){
                 getMyRoot().getChildren().removeAll(patchesBall, getMyLivesHBox());

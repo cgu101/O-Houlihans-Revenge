@@ -35,7 +35,6 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("O'Houlihan's Revenge");
         primaryStage.setOnCloseRequest(e -> Platform.exit());
-
         makeMainMenu();
     }
 
