@@ -3,6 +3,7 @@ package main.java;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -25,12 +26,15 @@ public class BattleLevel extends Level{
     private VillainDodgeballer villainPlayer;
     private ImageView villainPlayerIV;
     private boolean ducking;
+    private int enemyStartLives;
+    private HBox enemyLivesHBox;
 
     @Override
     Scene init(int w, int h, int l) {
         setMyWidth(w);
         setMyHeight(h);
         setMyStartLives(l);
+        setEnemyStartLives(3);
         setMyStartTime(120);
         setMyMoveSpeed(20);
         setMyTossSpeed(23);
@@ -38,6 +42,7 @@ public class BattleLevel extends Level{
         createHeroDodgeballer();
         createEnemyDodgeballer();
         setMyLivesHBox(getMyStartLives());
+        setEnemyLivesHBox(getEnemyStartLives());
 
         //Create scene graph to organize scene
         setMyRoot(new Group());
@@ -51,8 +56,7 @@ public class BattleLevel extends Level{
 
         baseline.setFill(Color.ROSYBROWN);
 
-        getMyRoot().getChildren().addAll(baseline, midline, midCirc, getMyPlayerIV(), villainPlayerIV, getMyLivesHBox());
-
+        getMyRoot().getChildren().addAll(baseline, midline, midCirc, getMyPlayerIV(), villainPlayerIV, getMyLivesHBox(), getEnemyLivesHBox());
         //respond to input
         getMyScene().setOnKeyPressed(e -> handleKeyInput(e.getCode()));
         getMyScene().setOnKeyReleased(e -> handleKeyRelease(e.getCode()));
@@ -171,5 +175,29 @@ public class BattleLevel extends Level{
 
     public void setDucking(boolean ducking) {
         this.ducking = ducking;
+    }
+
+    public int getEnemyStartLives() {
+        return enemyStartLives;
+    }
+
+    public void setEnemyStartLives(int enemyStartLives) {
+        this.enemyStartLives = enemyStartLives;
+    }
+
+    public HBox getEnemyLivesHBox() {
+        return enemyLivesHBox;
+    }
+
+    public void setEnemyLivesHBox(int l) {
+        HBox enemyLives = new HBox();
+        enemyLives.setAlignment(Pos.TOP_CENTER);
+        System.out.println(enemyLives.alignmentProperty());
+        for (int i = 0; i < l; i++) {
+            Circle life = new Circle(20, Color.PURPLE);
+            enemyLives.getChildren().add(life);
+        }
+        this.enemyLivesHBox = enemyLives;
+        enemyLivesHBox.setLayoutX(getMyWidth() -getMyWidth()*.1);
     }
 }
