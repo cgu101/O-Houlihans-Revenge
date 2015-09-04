@@ -71,9 +71,11 @@ Known bugs:
     implementation of the getGameStarted() conflicting with the gameTimeRemaining).
         edit: I believe I resolved this, however still makes mac "dink" noise like it is trying to do a popup.
     
-    2) Issues with the resource accessing path. I was able to get it to work temporarily by directly configuring
+    2) Issues with the resource build path for images. I was able to get it to work temporarily by directly configuring
     it from Terminal but despite rerouting the path through IntelliJ to include the entire 'main' folder it wasn't
-    able to fill the resources stream.
+    able to fill the resources stream. However, the static images seem to be stable to access using the route 
+    once 'main' was set inside the build route and the inputSteam for example.png was set to 
+    "main/resources/images/example.png"... which is where all my static images are stored. 
     
 Impressions/Suggestions:
    Impressions: 
