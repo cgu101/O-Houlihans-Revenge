@@ -84,7 +84,7 @@ public class Main extends Application {
         Button trainingButton = new Button("Begin your training!");
         trainingButton.setOnAction(e -> makeTrainingLevel());
         Button battleButton = new Button("Battle Goodman!");
-        battleButton.setOnAction(e -> makeBattleLevel());
+         battleButton.setOnAction(e -> makeBattleLevel());
 
         Button quitButton = new Button("Quit-I hate fun");
         quitButton.setOnAction(e -> Platform.exit());

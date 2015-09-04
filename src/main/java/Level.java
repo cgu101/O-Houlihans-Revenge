@@ -5,6 +5,7 @@ import javafx.animation.TranslateTransition;
 import javafx.beans.property.IntegerProperty;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
@@ -33,7 +34,7 @@ public abstract class Level {
     private TranslateTransition jumpTransition;
     private Boolean gameStarted;
     private double timeRemaining;
-    private ArrayList<Dodgeball> enemyBallList;
+    private ArrayList<Dodgeball> ballsInFlightList;
 
     abstract Scene init(int w, int h, int l);
 
@@ -181,11 +182,12 @@ public abstract class Level {
         this.timeRemaining = timeRemaining;
     }
 
-    public ArrayList<Dodgeball> getEnemyBallList() {
-        return enemyBallList;
+    public ArrayList<Dodgeball> getBallsInFlightList() {
+        return ballsInFlightList;
     }
 
-    public void setEnemyBallList(ArrayList<Dodgeball> enemyBallList) {
-        this.enemyBallList = enemyBallList;
+    public void setBallsInFlightList(ArrayList<Dodgeball> ballsInFlightList) {
+        this.ballsInFlightList = ballsInFlightList;
     }
+
 }

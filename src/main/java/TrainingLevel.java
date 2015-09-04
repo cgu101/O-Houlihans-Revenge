@@ -27,7 +27,6 @@ public class TrainingLevel extends Level {
 
     private PatchesDodgeballer patchesPlayer;
     private ImageView patchesPlayerIV;
-    private ArrayList<Dodgeball> ballList;
 
     @Override
     public Scene init(int w, int h, int l){
@@ -40,7 +39,7 @@ public class TrainingLevel extends Level {
         setMyTossSpeed(5);
         setGameStarted(false);
         setTimeRemaining(getMyStartTime());
-        ballList = new ArrayList<>();
+        setBallsInFlightList(new ArrayList<>());
 
         createHeroDodgeballer();
         createEnemyDodgeballer();
@@ -73,7 +72,7 @@ public class TrainingLevel extends Level {
         if(getGameStarted()) {
             setTimeRemaining(getTimeRemaining() - elapsedTime);
 
-            if (ballList.size() < 3) {
+            if (getBallsInFlightList().size() < 3) {
                 if (tossBall()) {
                     Random rand = new Random();
                     int variation = rand.nextInt(3)*20;
@@ -84,11 +83,11 @@ public class TrainingLevel extends Level {
                             20,
                             Color.RED);
 
-                    ballList.add(newBall);
+                    getBallsInFlightList().add(newBall);
                     getMyRoot().getChildren().add(newBall);
                 }
             }
-            Iterator<Dodgeball> iter = ballList.iterator();
+            Iterator<Dodgeball> iter = getBallsInFlightList().iterator();
             while (iter.hasNext()) {
                 Dodgeball patchesBall = iter.next();
                 patchesBall.setCenterX(patchesBall.getCenterX() - patchesPlayer.getMyTossSpeed());
@@ -214,7 +213,7 @@ public class TrainingLevel extends Level {
 
     //Prevents overlapping of dodgeball throws
     private boolean allBallsOverLine() {
-        for (Dodgeball dodgeball : ballList) {
+        for (Dodgeball dodgeball : getBallsInFlightList()) {
             if(dodgeball.getCenterX() > getMyWidth()/2){
                 return false;
             }
