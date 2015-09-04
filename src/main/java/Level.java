@@ -3,13 +3,18 @@ package main.java;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.beans.property.IntegerProperty;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
@@ -17,6 +22,7 @@ import java.util.ArrayList;
  * Created by connorusry on 9/1/15.
  */
 public abstract class Level {
+    private Stage currentPrimaryStage;
     private Integer myStartTime;
     private Integer myMoveSpeed;
     private Integer myTossSpeed;
@@ -34,9 +40,10 @@ public abstract class Level {
     private TranslateTransition jumpTransition;
     private Boolean gameStarted;
     private double timeRemaining;
+    private Label timerLabel;
     private ArrayList<Dodgeball> ballsInFlightList;
 
-    abstract Scene init(int w, int h, int l);
+    abstract Scene init(Stage ps, int w, int h, int l);
 
     abstract void step(double elapsedTime);
 
@@ -50,8 +57,40 @@ public abstract class Level {
 
     abstract void createEnemyDodgeballer();
 
-    abstract VBox getTimerVbox();
+    abstract VBox getTimerButtonVBox();
 
+    public void exitLevel(String s) {
+        setGameStarted(false);
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        VBox dialogVbox = new VBox(20);
+        dialogVbox.setAlignment(Pos.CENTER);
+        Button continueButton = new Button("Continue");
+        dialogVbox.getChildren().addAll(new Text(s), continueButton);
+        Scene dialogScene = new Scene(dialogVbox, 300, 200);
+
+        Main newMain = new Main();
+        continueButton.setOnAction(e->{
+            try {
+                newMain.init();
+                newMain.start(getCurrentPrimaryStage());
+                dialog.close();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        });
+        dialog.setScene(dialogScene);
+        dialog.show();
+        dialog.setOnCloseRequest(e ->{
+            try {
+                newMain.init();
+                newMain.start(getCurrentPrimaryStage());
+                dialog.close();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        });
+    }
     public Integer getMyMoveSpeed() {
         return myMoveSpeed;
     }
@@ -190,4 +229,19 @@ public abstract class Level {
         this.ballsInFlightList = ballsInFlightList;
     }
 
+    public Label getTimerLabel() {
+        return timerLabel;
+    }
+
+    public void setTimerLabel(Label timerLabel) {
+        this.timerLabel = timerLabel;
+    }
+
+    public Stage getCurrentPrimaryStage() {
+        return currentPrimaryStage;
+    }
+
+    public void setCurrentPrimaryStage(Stage currentPrimaryStage) {
+        this.currentPrimaryStage = currentPrimaryStage;
+    }
 }

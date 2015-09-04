@@ -1,6 +1,5 @@
 package main.java;
 
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -14,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,16 +29,17 @@ public class TrainingLevel extends Level {
     private ImageView patchesPlayerIV;
 
     @Override
-    public Scene init(int w, int h, int l){
+    public Scene init(Stage ps, int w, int h, int l){
         //initialize globals
+        setCurrentPrimaryStage(ps);
         setMyWidth(w);
         setMyHeight(h);
         setMyStartLives(l);
-        setMyStartTime(150);
+        setMyStartTime(120);
+        setTimeRemaining(getMyStartTime());
         setMyMoveSpeed(30);
         setMyTossSpeed(5);
         setGameStarted(false);
-        setTimeRemaining(getMyStartTime());
         setBallsInFlightList(new ArrayList<>());
 
         createHeroDodgeballer();
@@ -56,22 +57,40 @@ public class TrainingLevel extends Level {
         midline.setStrokeWidth(8);
         Circle midCirc = new Circle(getMyWidth()/2, getMyHeight()*2/3, 30);
         midCirc.setStrokeWidth(6);
+        Label timerLabel = new Label(Double.toString(getTimeRemaining()));
+        timerLabel.setTextFill(Color.BLACK);
+        timerLabel.setStyle("-fx-font-size: 4em;");
+        timerLabel.setLayoutX(getMyWidth() / 2 - getMyWidth() * .05);
+        timerLabel.setLayoutY(getMyHeight() * .2);
+        setTimerLabel(timerLabel);
+
 
         baseline.setFill(Color.ROSYBROWN);
 
         //Order added to group
-        getMyRoot().getChildren().addAll(baseline, midline, midCirc, getTimerVbox(), getMyPlayerIV(), patchesPlayerIV, getMyLivesHBox());
+        getMyRoot().getChildren().addAll(getTimerLabel(), baseline, midline, midCirc, getTimerButtonVBox(), getMyPlayerIV(), patchesPlayerIV, getMyLivesHBox());
 
         //respond to input
         getMyScene().setOnKeyPressed(e -> handleKeyInput(e.getCode()));
         return getMyScene();
     }
+
     @Override
     public void step (double elapsedTime) {
         // update attributes
+        if(getTimeRemaining() < 0 && getGameStarted()){
+            exitLevel("You beat training!!");
+        }
         if(getGameStarted()) {
+            getMyRoot().getChildren().remove(getTimerLabel());
             setTimeRemaining(getTimeRemaining() - elapsedTime);
-
+            Label timerLabel = new Label(Long.toString(Math.round(getTimeRemaining() - elapsedTime)));
+            timerLabel.setTextFill(Color.BLACK);
+            timerLabel.setStyle("-fx-font-size: 4em;");
+            timerLabel.setLayoutX(getMyWidth() / 2 - getMyWidth() * .04);
+            timerLabel.setLayoutY(getMyHeight() * .15);
+            setTimerLabel(timerLabel);
+            getMyRoot().getChildren().add(getTimerLabel());
             if (getBallsInFlightList().size() < 3) {
                 if (tossBall()) {
                     Random rand = new Random();
@@ -82,7 +101,6 @@ public class TrainingLevel extends Level {
                             getMyPlayerIV().getY() + variation,
                             20,
                             Color.RED);
-
                     getBallsInFlightList().add(newBall);
                     getMyRoot().getChildren().add(newBall);
                 }
@@ -101,7 +119,7 @@ public class TrainingLevel extends Level {
                     setMyLivesHBox(getMyLivesHBox().getChildren().size() - 1);
                     getMyRoot().getChildren().add(getMyLivesHBox());
                     if (getMyLivesHBox().getChildren().size() == 0) {
-                        Platform.exit();
+                        exitLevel("Patches defeated you. Train Harder!!");
                     }
                 }
                 else {
@@ -113,6 +131,8 @@ public class TrainingLevel extends Level {
         }
     }
 
+
+
     @Override
     protected void handleKeyInput(KeyCode code) {
         double xLoc = getMyPlayerIV().getX();
@@ -122,24 +142,24 @@ public class TrainingLevel extends Level {
             case RIGHT:
                 //Move Joe Right
                 //Check to see if crossed half court
-                if(xLoc + getMyPlayerIV().getBoundsInLocal().getWidth() + moveSpeed < getMyWidth() / 2){
+                if (xLoc + getMyPlayerIV().getBoundsInLocal().getWidth() + moveSpeed < getMyWidth() / 2) {
                     getMyPlayerIV().setX(xLoc + moveSpeed);
                 }
                 break;
             case LEFT:
                 //Move Joe Left
                 //Make sure not too far out of window
-                if(xLoc - moveSpeed > 0){
+                if (xLoc - moveSpeed > 0) {
                     getMyPlayerIV().setX(xLoc - moveSpeed);
                 }
                 break;
             case UP:
-                if(yLoc - moveSpeed > getMyHeight() *1/3){
+                if (yLoc - moveSpeed > getMyHeight() * 1 / 3) {
                     getMyPlayerIV().setY(yLoc - moveSpeed);
                 }
                 break;
             case DOWN:
-                if(yLoc + moveSpeed + getMyPlayerIV().getBoundsInParent().getHeight()< getMyHeight()){
+                if (yLoc + moveSpeed + getMyPlayerIV().getBoundsInParent().getHeight() < getMyHeight()) {
                     getMyPlayerIV().setY(yLoc + moveSpeed);
                 }
                 break;
@@ -147,14 +167,9 @@ public class TrainingLevel extends Level {
                 // do nothing
         }
     }
+
     @Override
-    protected void handleKeyRelease(KeyCode code) {
-//        double xLoc = myPlayerIV.getX();
-//        double yLoc = myPlayerIV.getY();
-//        myPlayerIV.setImage(stand);
-//        myPlayerIV.setX(xLoc);
-//        myPlayerIV.setY(yLoc);
-    }
+    void handleKeyRelease(KeyCode code) {}
 
     @Override
     protected void setMyLivesHBox(int l) {
@@ -166,7 +181,6 @@ public class TrainingLevel extends Level {
         }
 
     }
-
     @Override
     protected void createHeroDodgeballer() {
         Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/stand.png"));
@@ -176,6 +190,7 @@ public class TrainingLevel extends Level {
         setMyPlayerIV(getMyPlayer().getMyImageView());
 
     }
+
 
     @Override
     protected void createEnemyDodgeballer() {
@@ -188,15 +203,11 @@ public class TrainingLevel extends Level {
 
     //Add the countdown timer
     @Override
-    protected VBox getTimerVbox() {
-        Label timerLabel = new Label(getMyStartTime().toString());
-        timerLabel.setTextFill(Color.BLACK);
-        timerLabel.setStyle("-fx-font-size: 4em;");
+    protected VBox getTimerButtonVBox() {
         Button button = new Button();
         button.setText("Start Game!");
         button.setOnAction(e -> {
                     button.visibleProperty().set(false);
-                    timerLabel.visibleProperty().set(false);
                     setGameStarted(true);
                 }
         );
@@ -205,7 +216,7 @@ public class TrainingLevel extends Level {
         VBox vb = new VBox(20);
         vb.setAlignment(Pos.CENTER);
         vb.setPrefWidth(getMyScene().getWidth());
-        vb.getChildren().addAll(button, timerLabel);
+        vb.getChildren().add(button);
         vb.setLayoutY(30);
 
         return vb;

@@ -3,10 +3,10 @@ package main.java;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -37,14 +38,17 @@ public class BattleLevel extends Level{
 
 
     @Override
-    Scene init(int w, int h, int l) {
+    Scene init(Stage ps,int w, int h, int l) {
+        setCurrentPrimaryStage(ps);
         setMyWidth(w);
         setMyHeight(h);
         setMyStartLives(l);
         setEnemyStartLives(5);
         setMyStartTime(120);
+        setTimeRemaining(getMyStartTime());
         setMyMoveSpeed(60);
         setMyTossSpeed(8);
+        setGameStarted(false);
         setBallsInFlightList(new ArrayList<>());
 
         createHeroDodgeballer();
@@ -61,6 +65,12 @@ public class BattleLevel extends Level{
         midline.setStrokeWidth(8);
         Circle midCirc = new Circle(getMyWidth()/2, getMyHeight()*5/6, 15);
         midCirc.setStrokeWidth(6);
+        Label timerLabel = new Label(Double.toString(getTimeRemaining()));
+        timerLabel.setTextFill(Color.BLACK);
+        timerLabel.setStyle("-fx-font-size: 4em;");
+        timerLabel.setLayoutX(getMyWidth() / 2 - getMyWidth() * .05);
+        timerLabel.setLayoutY(getMyHeight() * .2);
+        setTimerLabel(timerLabel);
         setThrowBalllbl(new Label("'Space' -> Throw Ball"));
         getThrowBalllbl().visibleProperty().set(false);
         getThrowBalllbl().setStyle("-fx-font-size: 3em;");
@@ -68,7 +78,7 @@ public class BattleLevel extends Level{
 
         baseline.setFill(Color.ROSYBROWN);
 
-        getMyRoot().getChildren().addAll(getThrowBalllbl(), baseline, midline, midCirc, getMyPlayerIV(), villainPlayerIV, getMyLivesHBox(), getEnemyLivesHBox());
+        getMyRoot().getChildren().addAll(getTimerLabel(), getTimerButtonVBox(), getThrowBalllbl(), baseline, midline, midCirc, getMyPlayerIV(), villainPlayerIV, getMyLivesHBox(), getEnemyLivesHBox());
         //respond to input
         getMyScene().setOnKeyPressed(e -> handleKeyInput(e.getCode()));
         getMyScene().setOnKeyReleased(e -> handleKeyRelease(e.getCode()));
@@ -78,80 +88,93 @@ public class BattleLevel extends Level{
     @Override
     void step(double elapsedTime) {
         Random rand = new Random();
-        if(myDodgeball == null && rand.nextInt(100) == 0){
-            myDodgeball = new Dodgeball(getMyWidth()*.45,
-                    getMyHeight()*2/3,
-                    villainPlayerIV.getX(),
-                    villainPlayerIV.getY(),
-                    20,
-                    Color.RED,
-                    false,
-                    false);
-
-            getBallsInFlightList().add(myDodgeball);
-            getMyRoot().getChildren().add(myDodgeball);
-
+        if(getTimeRemaining() < 0 && getGameStarted()){
+            exitLevel("You got beat!!");
         }
-        if (tossBall()) {
-            int highOrLow = rand.nextInt(3) * 20;
-            Dodgeball newEnemyBall = new Dodgeball(villainPlayerIV.getX(),
-                    villainPlayerIV.getY(),
-                    getMyPlayerIV().getX(),
-                    getMyPlayerIV().getY() + highOrLow,
-                    20,
-                    Color.PURPLE,
-                    true,
-                    true);
+        if(getGameStarted()) {
+            getMyRoot().getChildren().remove(getTimerLabel());
+            setTimeRemaining(getTimeRemaining() - elapsedTime);
+            Label timerLabel = new Label(Long.toString(Math.round(getTimeRemaining() - elapsedTime)));
+            timerLabel.setTextFill(Color.BLACK);
+            timerLabel.setStyle("-fx-font-size: 4em;");
+            timerLabel.setLayoutX(getMyWidth() / 2 - getMyWidth() * .04);
+            timerLabel.setLayoutY(getMyHeight() * .15);
+            setTimerLabel(timerLabel);
+            getMyRoot().getChildren().add(getTimerLabel());
+            if (myDodgeball == null && rand.nextInt(100) == 0) {
 
-            getBallsInFlightList().add(newEnemyBall);
-            getMyRoot().getChildren().add(newEnemyBall);
-        }
-        Iterator<Dodgeball> iter = getBallsInFlightList().iterator();
-        while (iter.hasNext()) {
-            Dodgeball currBall = iter.next();
+                myDodgeball = new Dodgeball(getMyWidth() * .45,
+                        getMyHeight() * 2 / 3,
+                        villainPlayerIV.getX(),
+                        villainPlayerIV.getY(),
+                        20,
+                        Color.RED,
+                        false,
+                        false);
 
-            if(currBall.isBeingThrown()) {
-                if(!currBall.isEnemyBall()) {
-                    currBall.setCenterX(currBall.getCenterX() + villainPlayer.getMyTossSpeed());
-                    currBall.setCenterY(currBall.getCenterX() * currBall.getTrajectorySlope() + currBall.getTrajectoryYIntercept());
-                    // check for collisions
-                    if (villainPlayerIV.getBoundsInParent().intersects(currBall.getBoundsInParent())) {
-                        int currLives = enemyLivesHBox.getChildren().size();
-                        getMyRoot().getChildren().removeAll(currBall, enemyLivesHBox);
-                        setEnemyLivesHBox(currLives - 1);
-                        getMyRoot().getChildren().add(getEnemyLivesHBox());
-                        iter.remove();
-                        myDodgeball = null;
-                        if (enemyLivesHBox.getChildren().size() == 0) {
-                            Platform.exit();
+                getBallsInFlightList().add(myDodgeball);
+                getMyRoot().getChildren().add(myDodgeball);
+
+            }
+            if (tossBall()) {
+                int highOrLow = rand.nextInt(3) * 20;
+                Dodgeball newEnemyBall = new Dodgeball(villainPlayerIV.getX(),
+                        villainPlayerIV.getY(),
+                        getMyPlayerIV().getX(),
+                        getMyPlayerIV().getY() + highOrLow,
+                        20,
+                        Color.PURPLE,
+                        true,
+                        true);
+
+                getBallsInFlightList().add(newEnemyBall);
+                getMyRoot().getChildren().add(newEnemyBall);
+            }
+            Iterator<Dodgeball> iter = getBallsInFlightList().iterator();
+            while (iter.hasNext()) {
+                Dodgeball currBall = iter.next();
+
+                if (currBall.isBeingThrown()) {
+                    if (!currBall.isEnemyBall()) {
+                        currBall.setCenterX(currBall.getCenterX() + villainPlayer.getMyTossSpeed());
+                        currBall.setCenterY(currBall.getCenterX() * currBall.getTrajectorySlope() + currBall.getTrajectoryYIntercept());
+                        // check for collisions
+                        if (villainPlayerIV.getBoundsInParent().intersects(currBall.getBoundsInParent())) {
+                            int currLives = enemyLivesHBox.getChildren().size();
+                            getMyRoot().getChildren().removeAll(currBall, enemyLivesHBox);
+                            setEnemyLivesHBox(currLives - 1);
+                            getMyRoot().getChildren().add(getEnemyLivesHBox());
+                            iter.remove();
+                            myDodgeball = null;
+                            if (enemyLivesHBox.getChildren().size() == 0) {
+                                exitLevel("You won!!");
+                            }
                         }
-                    }
-                }
-                else{
-                    currBall.setCenterX(currBall.getCenterX() - villainPlayer.getMyTossSpeed());
-                    currBall.setCenterY(currBall.getCenterX() * currBall.getTrajectorySlope() + currBall.getTrajectoryYIntercept());
+                    } else {
+                        currBall.setCenterX(currBall.getCenterX() - villainPlayer.getMyTossSpeed());
+                        currBall.setCenterY(currBall.getCenterX() * currBall.getTrajectorySlope() + currBall.getTrajectoryYIntercept());
 //                     check for collisions
-                    if (getMyPlayerIV().getBoundsInParent().intersects(currBall.getBoundsInParent())) {
-                        iter.remove();
-                        getMyRoot().getChildren().removeAll(currBall, getMyLivesHBox());
+                        if (getMyPlayerIV().getBoundsInParent().intersects(currBall.getBoundsInParent())) {
+                            iter.remove();
+                            getMyRoot().getChildren().removeAll(currBall, getMyLivesHBox());
 
-                        setMyLivesHBox(getMyLivesHBox().getChildren().size() - 1);
-                        getMyRoot().getChildren().add(getMyLivesHBox());
-                        if (getMyLivesHBox().getChildren().size() == 0) {
-                            Platform.exit();
+                            setMyLivesHBox(getMyLivesHBox().getChildren().size() - 1);
+                            getMyRoot().getChildren().add(getMyLivesHBox());
+                            if (getMyLivesHBox().getChildren().size() == 0) {
+                                exitLevel("You got beat!!");
+                            }
                         }
-                    }
 
                     }
-                double currX = currBall.getCenterX();
-                if (currX < 0) {
-                    iter.remove();
-                    getMyRoot().getChildren().remove(currBall);
-                }
+                    double currX = currBall.getCenterX();
+                    if (currX < 0) {
+                        iter.remove();
+                        getMyRoot().getChildren().remove(currBall);
+                    }
                 }
 
             }
-
+        }
     }
 
     @Override
@@ -281,9 +304,25 @@ public class BattleLevel extends Level{
         villainPlayerIV= villainPlayer.getMyImageView();
     }
 
+    //Add the countdown timer
     @Override
-    protected VBox getTimerVbox() {
-        return null;
+    protected VBox getTimerButtonVBox() {
+        Button button = new Button();
+        button.setText("Start Game!");
+        button.setOnAction(e -> {
+                    button.visibleProperty().set(false);
+                    setGameStarted(true);
+                }
+        );
+
+        //Puts timer in Vbox
+        VBox vb = new VBox(20);
+        vb.setAlignment(Pos.CENTER);
+        vb.setPrefWidth(getMyScene().getWidth());
+        vb.getChildren().add(button);
+        vb.setLayoutY(30);
+
+        return vb;
     }
 
     public boolean isDucking() {
