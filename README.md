@@ -10,6 +10,7 @@ Date finished:Friday September 4, 2015
 Hours worked: ~30
 
 Resources used: 
+
     1) Oracle Javafx Docs
     2) Stack Overflow
     3) ASG Teach
@@ -20,9 +21,11 @@ Resources used:
         
 
 Main class file:
+
     -Main.java
 
 Data (non Java) files needed:
+
     - duck.png
     - patchesMenu.png
     - patchesStand.png
@@ -30,6 +33,7 @@ Data (non Java) files needed:
     - villainStand.png
 
 How to play the game:
+
     - Training Level:
         Your player can move up, down, left, right in the 2D space confined by your side of the court. The 
         point of this level is to avoid the dodgeballs being thrown at you by Patches O'Houlihan on the other
@@ -40,6 +44,7 @@ How to play the game:
         side of the court, while trying to gather dodgeballs and throw them at White to reduce his lives to zero.
 
 Keys/Mouse input:
+
     -Training Level:
         Up Arrow -> move up
         Down Arrow -> move down
@@ -56,6 +61,7 @@ Keys/Mouse input:
         Mouse Click -> Hit start to start game
             
 Cheat Keys:
+
     Once inside a training or battle level. Before you hit the 'start game' button.
     
     -Increase/Decrease Your Lives:
@@ -67,6 +73,7 @@ Cheat Keys:
         
         
 Known bugs:
+
     1) The transition between levels with the popup would unpredictably create a popup (I believe it's due to my 
     implementation of the getGameStarted() conflicting with the gameTimeRemaining).
         edit: I believe I resolved this, however still makes mac "dink" noise like it is trying to do a popup.
@@ -78,6 +85,7 @@ Known bugs:
     "main/resources/images/example.png"... which is where all my static images are stored. 
     
 Impressions/Suggestions:
+
    Impressions: 
     I honestly had a blast creating this game. I have never built a fully scaled up game before so it was awesome
     being able to completely think of/design/implement the entire game.  That being said it took significantly longer
