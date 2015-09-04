@@ -163,6 +163,56 @@ public class TrainingLevel extends Level {
                     getMyPlayerIV().setY(yLoc + moveSpeed);
                 }
                 break;
+            case L:
+                if(getGameStarted() == false){
+                    setMyStartLives(getMyStartLives() + 1);
+                    getMyRoot().getChildren().remove(getMyLivesHBox());
+                    setMyLivesHBox(getMyStartLives());
+                    getMyRoot().getChildren().add(getMyLivesHBox());
+                }
+                break;
+            case D:
+                if(getGameStarted() == false && getMyStartLives() > 0){
+                    setMyStartLives(getMyStartLives() -1);
+                    getMyRoot().getChildren().remove(getMyLivesHBox());
+                    setMyLivesHBox(getMyStartLives());
+                    getMyRoot().getChildren().add(getMyLivesHBox());
+                }
+                break;
+            case T:
+                if(getGameStarted() == false){
+                    setMyStartTime(getMyStartTime() + 5);
+                    setTimeRemaining(getMyStartTime());
+                    getTimerButtonVBox();
+                    getMyRoot().getChildren().remove(getTimerLabel());
+
+
+                    Label timerLabel = new Label(Double.toString(getTimeRemaining()));
+                    timerLabel.setTextFill(Color.BLACK);
+                    timerLabel.setStyle("-fx-font-size: 4em;");
+                    timerLabel.setLayoutX(getMyWidth() / 2 - getMyWidth() * .05);
+                    timerLabel.setLayoutY(getMyHeight() * .2);
+                    setTimerLabel(timerLabel);
+                    getMyRoot().getChildren().add(getTimerLabel());
+                }
+                break;
+            case Y:
+                if(getGameStarted() == false && getMyStartTime() > 5){
+                    setMyStartTime(getMyStartTime() - 5);
+                    setTimeRemaining(getMyStartTime());
+                    getTimerButtonVBox();
+                    getMyRoot().getChildren().remove(getTimerLabel());
+
+
+                    Label timerLabel = new Label(Double.toString(getTimeRemaining()));
+                    timerLabel.setTextFill(Color.BLACK);
+                    timerLabel.setStyle("-fx-font-size: 4em;");
+                    timerLabel.setLayoutX(getMyWidth() / 2 - getMyWidth() * .05);
+                    timerLabel.setLayoutY(getMyHeight() * .2);
+                    setTimerLabel(timerLabel);
+                    getMyRoot().getChildren().add(getTimerLabel());
+                }
+                break;
             default:
                 // do nothing
         }

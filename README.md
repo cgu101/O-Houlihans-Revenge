@@ -56,7 +56,16 @@ Keys/Mouse input:
         Mouse Click -> Hit start to start game
             
 Cheat Keys:
+    Once inside a training or battle level. Before you hit the 'start game' button.
     
+    -Increase/Decrease Your Lives:
+        L -> increase your lives.
+        D -> decrease your lives.
+    -Increase/Decrease Time
+        T -> increase time.
+        Y -> decrease time.
+        
+        
 Known bugs:
     1) The transition between levels with the popup would unpredictably create a popup (I believe it's due to my 
     implementation of the getGameStarted() conflicting with the gameTimeRemaining).
