@@ -3,6 +3,7 @@ package main.java;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -17,6 +18,9 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 
 /**
  * Created by connorusry on 8/30/15.
@@ -29,6 +33,7 @@ public class BattleLevel extends Level{
     private int enemyStartLives;
     private HBox enemyLivesHBox;
 
+
     @Override
     Scene init(int w, int h, int l) {
         setMyWidth(w);
@@ -37,7 +42,8 @@ public class BattleLevel extends Level{
         setEnemyStartLives(3);
         setMyStartTime(120);
         setMyMoveSpeed(20);
-        setMyTossSpeed(23);
+        setMyTossSpeed(8);
+        setEnemyBallList(new ArrayList<>());
 
         createHeroDodgeballer();
         createEnemyDodgeballer();
@@ -65,7 +71,42 @@ public class BattleLevel extends Level{
 
     @Override
     void step(double elapsedTime) {
+        if (getEnemyBallList().size() < 3) {
+            if (tossBall()) {
+                Random rand = new Random();
+                int highOrLow = rand.nextInt(3)*20;
+                Dodgeball newBall = new Dodgeball(villainPlayerIV.getX(),
+                        villainPlayerIV.getY(),
+                        getMyPlayerIV().getX(),
+                        getMyPlayerIV().getY() + highOrLow,
+                        20,
+                        Color.RED);
 
+                getEnemyBallList().add(newBall);
+                getMyRoot().getChildren().add(newBall);
+            }
+        }
+        Iterator<Dodgeball> iter = getEnemyBallList().iterator();
+        while (iter.hasNext()) {
+            Dodgeball villainBall = iter.next();
+            villainBall.setCenterX(villainBall.getCenterX() - villainPlayer.getMyTossSpeed());
+            villainBall.setCenterY(villainBall.getCenterX() * villainBall.getTrajectorySlope() + villainBall.getTrajectoryYIntercept());
+
+            // check for collisions
+            if (getMyPlayerIV().getBoundsInParent().intersects(villainBall.getBoundsInParent())) {
+                getMyRoot().getChildren().removeAll(villainBall, getMyLivesHBox());
+
+                setMyLivesHBox(getMyLivesHBox().getChildren().size() - 1);
+                getMyRoot().getChildren().add(getMyLivesHBox());
+                if (getMyLivesHBox().getChildren().size() == 0) {
+                    Platform.exit();
+                }
+            } else {
+                if (villainBall.getCenterX() + villainBall.getBoundsInParent().getWidth() / 2 < 0) {
+                    iter.remove();
+                }
+            }
+        }
     }
 
     @Override
@@ -92,7 +133,7 @@ public class BattleLevel extends Level{
                 if(getJumpTransition() == null || getJumpTransition().getStatus() == Animation.Status.STOPPED) {
                     setJumpTransition(new TranslateTransition(Duration.millis(300), getMyPlayerIV()));
                     getJumpTransition().interpolatorProperty().set(Interpolator.SPLINE(.1, .1, .7, .7));
-                    getJumpTransition().setByY(-getMyPlayerIV().getY()/2);
+                    getJumpTransition().setByY(-getMyPlayerIV().getY());
                     getJumpTransition().setAutoReverse(true);
                     getJumpTransition().setCycleCount(2);
                     getJumpTransition().play();
@@ -113,6 +154,7 @@ public class BattleLevel extends Level{
                 break;
             case A:
                 if(getMyPlayer().isHoldingBall()){
+
 
                 }
 
@@ -203,5 +245,22 @@ public class BattleLevel extends Level{
         }
         this.enemyLivesHBox = enemyLives;
         enemyLivesHBox.setLayoutX(getMyWidth() -getMyWidth()*.1);
+    }
+    //Prevents overlapping of dodgeball throws
+    private boolean allBallsOverLine() {
+        for (Dodgeball dodgeball : getEnemyBallList()) {
+            if(dodgeball.getCenterX() > getMyWidth()/2){
+                return false;
+            }
+        }
+        return true;
+    }
+    //Chance that patches throws a ball
+    public boolean tossBall(){
+        Random rand = new Random();
+        if (rand.nextInt(100) == 0) { //tosses a ball 1% of the steps
+            return allBallsOverLine();
+        }
+        return false;
     }
 }

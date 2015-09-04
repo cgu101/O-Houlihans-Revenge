@@ -10,6 +10,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
+
 /**
  * Created by connorusry on 9/1/15.
  */
@@ -31,6 +33,7 @@ public abstract class Level {
     private TranslateTransition jumpTransition;
     private Boolean gameStarted;
     private double timeRemaining;
+    private ArrayList<Dodgeball> enemyBallList;
 
     abstract Scene init(int w, int h, int l);
 
@@ -176,5 +179,13 @@ public abstract class Level {
 
     public void setTimeRemaining(double timeRemaining) {
         this.timeRemaining = timeRemaining;
+    }
+
+    public ArrayList<Dodgeball> getEnemyBallList() {
+        return enemyBallList;
+    }
+
+    public void setEnemyBallList(ArrayList<Dodgeball> enemyBallList) {
+        this.enemyBallList = enemyBallList;
     }
 }

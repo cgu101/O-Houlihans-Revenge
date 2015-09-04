@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-
 /**
  * Created by connorusry on 8/29/15.
  */
@@ -46,7 +45,6 @@ public class TrainingLevel extends Level {
         createHeroDodgeballer();
         createEnemyDodgeballer();
         setMyLivesHBox(getMyStartLives());
-
 
         //Create scene
         setMyRoot(new Group());
@@ -77,10 +75,12 @@ public class TrainingLevel extends Level {
 
             if (ballList.size() < 3) {
                 if (tossBall()) {
+                    Random rand = new Random();
+                    int variation = rand.nextInt(3)*20;
                     Dodgeball newBall = new Dodgeball(patchesPlayerIV.getX(),
                             patchesPlayerIV.getY(),
-                            getMyPlayerIV().getX(),
-                            getMyPlayerIV().getY(),
+                            getMyPlayerIV().getX() + variation,
+                            getMyPlayerIV().getY() + variation,
                             20,
                             Color.RED);
 
@@ -96,6 +96,7 @@ public class TrainingLevel extends Level {
 
                 // check for collisions
                 if (getMyPlayerIV().getBoundsInParent().intersects(patchesBall.getBoundsInParent())) {
+                    iter.remove();
                     getMyRoot().getChildren().removeAll(patchesBall, getMyLivesHBox());
 
                     setMyLivesHBox(getMyLivesHBox().getChildren().size() - 1);
@@ -103,7 +104,8 @@ public class TrainingLevel extends Level {
                     if (getMyLivesHBox().getChildren().size() == 0) {
                         Platform.exit();
                     }
-                } else {
+                }
+                else {
                     if (patchesBall.getCenterX() + patchesBall.getBoundsInParent().getWidth() / 2 < 0) {
                         iter.remove();
                     }
@@ -111,7 +113,6 @@ public class TrainingLevel extends Level {
             }
         }
     }
-
 
     @Override
     protected void handleKeyInput(KeyCode code) {
@@ -224,12 +225,11 @@ public class TrainingLevel extends Level {
     public boolean tossBall(){
         Random rand = new Random();
         if (rand.nextInt(100) == 0) { //tosses a ball 1% of the steps
-          return allBallsOverLine();
+            return allBallsOverLine();
         }
         return false;
     }
 }
-
 
 //timeseconds =  SimpleIntegerProperty (START_TIME)
 //start time = Integer
