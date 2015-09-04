@@ -1,8 +1,6 @@
 package main.java;
 
-import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -16,7 +14,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 
 
 /**
@@ -27,7 +28,7 @@ public class TrainingLevel extends Level {
 
     private PatchesDodgeballer patchesPlayer;
     private ImageView patchesPlayerIV;
-    private Dodgeball patchesBall;
+    private ArrayList<Dodgeball> ballList;
 
     @Override
     public Scene init(int w, int h, int l){
@@ -36,12 +37,16 @@ public class TrainingLevel extends Level {
         setMyHeight(h);
         setMyStartLives(l);
         setMyStartTime(150);
-        setMyMoveSpeed(20);
+        setMyMoveSpeed(30);
         setMyTossSpeed(5);
+        setGameStarted(false);
+        setTimeRemaining(getMyStartTime());
+        ballList = new ArrayList<>();
 
         createHeroDodgeballer();
         createEnemyDodgeballer();
         setMyLivesHBox(getMyStartLives());
+
 
         //Create scene
         setMyRoot(new Group());
@@ -62,43 +67,51 @@ public class TrainingLevel extends Level {
 
         //respond to input
         getMyScene().setOnKeyPressed(e -> handleKeyInput(e.getCode()));
-        getMyScene().setOnKeyReleased(e -> handleKeyRelease(e.getCode()));
         return getMyScene();
     }
-
     @Override
     public void step (double elapsedTime) {
         // update attributes
-        //Chance that patches throws a ball if no ball is in play
-        if(patchesBall == null){
-                if(patchesPlayer.tossBall()){
-                    patchesBall = new Dodgeball(patchesPlayerIV.getX(),
-                                                patchesPlayerIV.getY(),
-                                                getMyPlayerIV().getX(),
-                                                getMyPlayerIV().getY(),
-                                                30,
-                                                Color.RED);
-                    getMyRoot().getChildren().add(patchesBall);
+        if(getGameStarted()) {
+            setTimeRemaining(getTimeRemaining() - elapsedTime);
+
+            if (ballList.size() < 3) {
+                if (tossBall()) {
+                    Dodgeball newBall = new Dodgeball(patchesPlayerIV.getX(),
+                            patchesPlayerIV.getY(),
+                            getMyPlayerIV().getX(),
+                            getMyPlayerIV().getY(),
+                            20,
+                            Color.RED);
+
+                    ballList.add(newBall);
+                    getMyRoot().getChildren().add(newBall);
                 }
-        } else {
-            patchesBall.setCenterX(patchesBall.getCenterX() - patchesPlayer.getMyTossSpeed());
-            patchesBall.setCenterY(patchesBall.getCenterX() * patchesBall.getTrajectorySlope() + patchesBall.getTrajectoryYIntercept());
-            // check for collisions
-            if(getMyPlayerIV().getBoundsInParent().intersects(patchesBall.getBoundsInParent())){
-                getMyRoot().getChildren().removeAll(patchesBall, getMyLivesHBox());
-                patchesBall = null;
-                setMyLivesHBox(getMyLivesHBox().getChildren().size() - 1);
-                getMyRoot().getChildren().add(getMyLivesHBox());
-                if(getMyLivesHBox().getChildren().size() == 0){
-                    Platform.exit();
-                }
-            } else {
-                if (patchesBall.getCenterX() + patchesBall.getBoundsInParent().getWidth() / 2 < 0) {
-                    patchesBall = null;
+            }
+            Iterator<Dodgeball> iter = ballList.iterator();
+            while (iter.hasNext()) {
+                Dodgeball patchesBall = iter.next();
+                patchesBall.setCenterX(patchesBall.getCenterX() - patchesPlayer.getMyTossSpeed());
+                patchesBall.setCenterY(patchesBall.getCenterX() * patchesBall.getTrajectorySlope() + patchesBall.getTrajectoryYIntercept());
+
+                // check for collisions
+                if (getMyPlayerIV().getBoundsInParent().intersects(patchesBall.getBoundsInParent())) {
+                    getMyRoot().getChildren().removeAll(patchesBall, getMyLivesHBox());
+
+                    setMyLivesHBox(getMyLivesHBox().getChildren().size() - 1);
+                    getMyRoot().getChildren().add(getMyLivesHBox());
+                    if (getMyLivesHBox().getChildren().size() == 0) {
+                        Platform.exit();
+                    }
+                } else {
+                    if (patchesBall.getCenterX() + patchesBall.getBoundsInParent().getWidth() / 2 < 0) {
+                        iter.remove();
+                    }
                 }
             }
         }
     }
+
 
     @Override
     protected void handleKeyInput(KeyCode code) {
@@ -176,21 +189,15 @@ public class TrainingLevel extends Level {
     //Add the countdown timer
     @Override
     protected VBox getTimerVbox() {
-        Label timerLabel = new Label();
-        timerLabel.textProperty().bind(new SimpleIntegerProperty(getMyStartTime()).asString());
+        Label timerLabel = new Label(getMyStartTime().toString());
         timerLabel.setTextFill(Color.BLACK);
         timerLabel.setStyle("-fx-font-size: 4em;");
-
         Button button = new Button();
         button.setText("Start Game!");
         button.setOnAction(e -> {
                     button.visibleProperty().set(false);
-                    setMyTimeSeconds(new SimpleIntegerProperty(getMyStartTime()));
-                    setMyClockTimeline(new Timeline());
-                    getMyClockTimeline().getKeyFrames().add(
-                            new KeyFrame(Duration.seconds(getMyStartTime() + 1),
-                                    new KeyValue(new SimpleIntegerProperty(getMyStartTime()), 0)));
-                    getMyClockTimeline().playFromStart();
+                    timerLabel.visibleProperty().set(false);
+                    setGameStarted(true);
                 }
         );
 
@@ -202,6 +209,24 @@ public class TrainingLevel extends Level {
         vb.setLayoutY(30);
 
         return vb;
+    }
+
+    //Prevents overlapping of dodgeball throws
+    private boolean allBallsOverLine() {
+        for (Dodgeball dodgeball : ballList) {
+            if(dodgeball.getCenterX() > getMyWidth()/2){
+                return false;
+            }
+        }
+        return true;
+    }
+    //Chance that patches throws a ball
+    public boolean tossBall(){
+        Random rand = new Random();
+        if (rand.nextInt(100) == 0) { //tosses a ball 1% of the steps
+          return allBallsOverLine();
+        }
+        return false;
     }
 }
 

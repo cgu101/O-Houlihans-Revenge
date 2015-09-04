@@ -111,6 +111,11 @@ public class BattleLevel extends Level{
                     setDucking(true);
                 }
                 break;
+            case A:
+                if(getMyPlayer().isHoldingBall()){
+
+                }
+
             default:
         }
     }
@@ -118,7 +123,6 @@ public class BattleLevel extends Level{
     @Override
     protected void handleKeyRelease(KeyCode code) {
         double xLoc = getMyPlayerIV().getX();
-        double yLoc = getMyPlayerIV().getY();
         switch (code) {
             case DOWN:
                 getMyRoot().getChildren().removeAll(getMyPlayerIV());

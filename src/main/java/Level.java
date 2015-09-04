@@ -29,6 +29,8 @@ public abstract class Level {
     private Timeline myClockTimeline;
     private IntegerProperty myTimeSeconds;
     private TranslateTransition jumpTransition;
+    private Boolean gameStarted;
+    private double timeRemaining;
 
     abstract Scene init(int w, int h, int l);
 
@@ -158,5 +160,21 @@ public abstract class Level {
 
     public void setJumpTransition(TranslateTransition jumpTransition) {
         this.jumpTransition = jumpTransition;
+    }
+
+    public Boolean getGameStarted() {
+        return gameStarted;
+    }
+
+    public void setGameStarted(Boolean gameStarted) {
+        this.gameStarted = gameStarted;
+    }
+
+    public double getTimeRemaining() {
+        return timeRemaining;
+    }
+
+    public void setTimeRemaining(double timeRemaining) {
+        this.timeRemaining = timeRemaining;
     }
 }
