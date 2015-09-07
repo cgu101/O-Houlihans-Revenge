@@ -1,3 +1,6 @@
+// This entire file is part of my masterpiece.
+// Connor Usry
+
 package main.java;
 
 import javafx.animation.Animation;
@@ -59,26 +62,9 @@ public class BattleLevel extends Level{
         //Create scene graph to organize scene
         setMyRoot(new Group());
         setMyScene(new Scene(getMyRoot(), getMyWidth(), getMyHeight(), Color.BLANCHEDALMOND));
-        Line baseline = new Line(0, getMyHeight()*2/3, getMyWidth(), getMyHeight()*2/3);
-        baseline.setStrokeWidth(8);
-        Line midline = new Line(getMyWidth()*.55, getMyHeight()*2/3, getMyWidth()*.45, getMyHeight());
-        midline.setStrokeWidth(8);
-        Circle midCirc = new Circle(getMyWidth()/2, getMyHeight()*5/6, 15);
-        midCirc.setStrokeWidth(6);
-        Label timerLabel = new Label(Double.toString(getTimeRemaining()));
-        timerLabel.setTextFill(Color.BLACK);
-        timerLabel.setStyle("-fx-font-size: 4em;");
-        timerLabel.setLayoutX(getMyWidth() / 2 - getMyWidth() * .05);
-        timerLabel.setLayoutY(getMyHeight() * .2);
-        setTimerLabel(timerLabel);
-        setThrowBalllbl(new Label("'Space' -> Throw Ball"));
-        getThrowBalllbl().visibleProperty().set(false);
-        getThrowBalllbl().setStyle("-fx-font-size: 3em;");
-        getThrowBalllbl().setLayoutY(getMyHeight() - 50);
+        setUpScene();
 
-        baseline.setFill(Color.ROSYBROWN);
 
-        getMyRoot().getChildren().addAll(getTimerLabel(), getTimerButtonVBox(), getThrowBalllbl(), baseline, midline, midCirc, getMyPlayerIV(), villainPlayerIV, getMyLivesHBox(), getEnemyLivesHBox());
         //respond to input
         getMyScene().setOnKeyPressed(e -> handleKeyInput(e.getCode()));
         getMyScene().setOnKeyReleased(e -> handleKeyRelease(e.getCode()));
@@ -439,4 +425,29 @@ public class BattleLevel extends Level{
     public void setThrowBalllbl(Label throwBalllbl) {
         this.throwBalllbl = throwBalllbl;
     }
+
+    @Override
+    void setUpScene() {
+        Line baseline = new Line(0, getMyHeight()*2/3, getMyWidth(), getMyHeight()*2/3);
+        baseline.setStrokeWidth(8);
+        baseline.setFill(Color.ROSYBROWN);
+        Line midline = new Line(getMyWidth()*.55, getMyHeight()*2/3, getMyWidth()*.45, getMyHeight());
+        midline.setStrokeWidth(8);
+        Circle midCirc = new Circle(getMyWidth()/2, getMyHeight()*5/6, 15);
+        midCirc.setStrokeWidth(6);
+        Label timerLabel = new Label(Double.toString(getTimeRemaining()));
+        timerLabel.setTextFill(Color.BLACK);
+        timerLabel.setStyle("-fx-font-size: 4em;");
+        timerLabel.setLayoutX(getMyWidth() / 2 - getMyWidth() * .05);
+        timerLabel.setLayoutY(getMyHeight() * .2);
+        setTimerLabel(timerLabel);
+        setThrowBalllbl(new Label("'Space' -> Throw Ball"));
+        getThrowBalllbl().visibleProperty().set(false);
+        getThrowBalllbl().setStyle("-fx-font-size: 3em;");
+        getThrowBalllbl().setLayoutY(getMyHeight() - 50);
+
+
+        getMyRoot().getChildren().addAll(getTimerLabel(), getTimerButtonVBox(), getThrowBalllbl(), baseline, midline, midCirc, getMyPlayerIV(), villainPlayerIV, getMyLivesHBox(), getEnemyLivesHBox());
+    }
 }
+

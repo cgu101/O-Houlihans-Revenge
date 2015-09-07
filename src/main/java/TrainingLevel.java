@@ -1,3 +1,6 @@
+// This entire file is part of my masterpiece.
+// Connor Usry
+
 package main.java;
 
 import javafx.geometry.Pos;
@@ -49,26 +52,7 @@ public class TrainingLevel extends Level {
         //Create scene
         setMyRoot(new Group());
         setMyScene(new Scene(getMyRoot(), getMyWidth(), getMyHeight(), Color.BISQUE));
-
-        //Make some shapes and set properties
-        Line baseline = new Line(0, getMyHeight()*1/3, getMyWidth(), getMyHeight()*1/3);
-        baseline.setStrokeWidth(8);
-        Line midline = new Line(getMyWidth()/2, getMyHeight()*1/3, getMyWidth()/2, getMyHeight());
-        midline.setStrokeWidth(8);
-        Circle midCirc = new Circle(getMyWidth()/2, getMyHeight()*2/3, 30);
-        midCirc.setStrokeWidth(6);
-        Label timerLabel = new Label(Double.toString(getTimeRemaining()));
-        timerLabel.setTextFill(Color.BLACK);
-        timerLabel.setStyle("-fx-font-size: 4em;");
-        timerLabel.setLayoutX(getMyWidth() / 2 - getMyWidth() * .05);
-        timerLabel.setLayoutY(getMyHeight() * .2);
-        setTimerLabel(timerLabel);
-
-
-        baseline.setFill(Color.ROSYBROWN);
-
-        //Order added to group
-        getMyRoot().getChildren().addAll(getTimerLabel(), baseline, midline, midCirc, getTimerButtonVBox(), getMyPlayerIV(), patchesPlayerIV, getMyLivesHBox());
+        setUpScene();
 
         //respond to input
         getMyScene().setOnKeyPressed(e -> handleKeyInput(e.getCode()));
@@ -289,6 +273,27 @@ public class TrainingLevel extends Level {
         }
         return false;
     }
+
+    @Override
+    void setUpScene() {
+        Line baseline = new Line(0, getMyHeight()*1/3, getMyWidth(), getMyHeight()*1/3);
+        baseline.setStrokeWidth(8);
+        baseline.setFill(Color.ROSYBROWN);
+        Line midline = new Line(getMyWidth()/2, getMyHeight()*1/3, getMyWidth()/2, getMyHeight());
+        midline.setStrokeWidth(8);
+        Circle midCirc = new Circle(getMyWidth()/2, getMyHeight()*2/3, 30);
+        midCirc.setStrokeWidth(6);
+        Label timerLabel = new Label(Double.toString(getTimeRemaining()));
+        timerLabel.setTextFill(Color.BLACK);
+        timerLabel.setStyle("-fx-font-size: 4em;");
+        timerLabel.setLayoutX(getMyWidth() / 2 - getMyWidth() * .05);
+        timerLabel.setLayoutY(getMyHeight() * .2);
+        setTimerLabel(timerLabel);
+
+        getMyRoot().getChildren().addAll(getTimerLabel(), baseline, midline, midCirc, getTimerButtonVBox(), getMyPlayerIV(), patchesPlayerIV, getMyLivesHBox());
+
+    }
+
 }
 
 //timeseconds =  SimpleIntegerProperty (START_TIME)

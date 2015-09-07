@@ -1,3 +1,6 @@
+// This entire file is part of my masterpiece.
+// Connor Usry
+
 package main.java;
 
 import javafx.animation.Timeline;
@@ -42,6 +45,8 @@ public abstract class Level {
     private double timeRemaining;
     private Label timerLabel;
     private ArrayList<Dodgeball> ballsInFlightList;
+
+    void setUpScene() {}
 
     abstract Scene init(Stage ps, int w, int h, int l);
 
