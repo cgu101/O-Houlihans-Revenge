@@ -118,7 +118,7 @@ public class TrainingLevel extends Level {
 
 
     @Override
-    protected void handleKeyInput(KeyCode code) {
+    public void handleKeyInput(KeyCode code) {
         double xLoc = getMyPlayerIV().getX();
         double yLoc = getMyPlayerIV().getY();
         double moveSpeed = getMyPlayer().getMyMoveSpeed();
@@ -203,10 +203,10 @@ public class TrainingLevel extends Level {
     }
 
     @Override
-    void handleKeyRelease(KeyCode code) {}
+    public void handleKeyRelease(KeyCode code) {}
 
     @Override
-    protected void setMyLivesHBox(int l) {
+    public void setMyLivesHBox(int l) {
         // TODO: Figure out why standard iter isn't working for circle
         setMyLivesHBox(new HBox());
         for(int i = 0; i < l; i++){
@@ -216,7 +216,7 @@ public class TrainingLevel extends Level {
 
     }
     @Override
-    protected void createHeroDodgeballer() {
+    public void createHeroDodgeballer() {
         Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/stand.png"));
         setMyPlayer(new MyDodgeballer(getMyStartLives(), getMyMoveSpeed(), new ImageView(stand)));
         getMyPlayer().getMyImageView().setX((.2 * getMyWidth())  - getMyPlayer().getMyImageView().getBoundsInLocal().getWidth() / 2);
@@ -227,7 +227,7 @@ public class TrainingLevel extends Level {
 
 
     @Override
-    protected void createEnemyDodgeballer() {
+    public void createEnemyDodgeballer() {
         Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/patchesStand.png"));
         patchesPlayer = new PatchesDodgeballer(0, getMyMoveSpeed(), getMyTossSpeed(), new ImageView(stand));
         patchesPlayer.getMyImageView().setX((.8 * getMyWidth()) - patchesPlayer.getMyImageView().getBoundsInLocal().getWidth() / 2);
@@ -237,7 +237,7 @@ public class TrainingLevel extends Level {
 
     //Add the countdown timer
     @Override
-    protected VBox getTimerButtonVBox() {
+    public VBox getTimerButtonVBox() {
         Button button = new Button();
         button.setText("Start Game!");
         button.setOnAction(e -> {

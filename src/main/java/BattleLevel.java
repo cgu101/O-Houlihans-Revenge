@@ -41,7 +41,7 @@ public class BattleLevel extends Level{
 
 
     @Override
-    Scene init(Stage ps,int w, int h, int l) {
+    public Scene init(Stage ps,int w, int h, int l) {
         setCurrentPrimaryStage(ps);
         setMyWidth(w);
         setMyHeight(h);
@@ -72,7 +72,7 @@ public class BattleLevel extends Level{
     }
 
     @Override
-    void step(double elapsedTime) {
+    public void step(double elapsedTime) {
         Random rand = new Random();
         if(getTimeRemaining() < 0 && getGameStarted()){
             exitLevel("You got beat, you didn't defeat Goodman!!");
@@ -164,7 +164,7 @@ public class BattleLevel extends Level{
     }
 
     @Override
-    protected void handleKeyInput(KeyCode code) {
+    public void handleKeyInput(KeyCode code) {
         double xLoc = getMyPlayerIV().getBoundsInParent().getMinX();
         double yLoc = getMyPlayerIV().getY();
         double yLocBottom = yLoc + getMyPlayerIV().getBoundsInParent().getHeight()/2;
@@ -291,7 +291,7 @@ public class BattleLevel extends Level{
     }
 
     @Override
-    protected void handleKeyRelease(KeyCode code) {
+    public void handleKeyRelease(KeyCode code) {
         double xLoc = getMyPlayerIV().getX();
         switch (code) {
             case DOWN:
@@ -312,7 +312,7 @@ public class BattleLevel extends Level{
     }
 
     @Override
-    protected void setMyLivesHBox(int l) {
+    public void setMyLivesHBox(int l) {
         // TODO: Figure out why standard iter isn't working for circle
         setMyLivesHBox(new HBox());
         for(int i = 0; i < l; i++){
@@ -323,7 +323,7 @@ public class BattleLevel extends Level{
     }
 
     @Override
-    protected void createHeroDodgeballer() {
+    public void createHeroDodgeballer() {
         Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/stand.png"));
         setMyPlayer(new MyDodgeballer(getMyStartLives(), getMyMoveSpeed(), new ImageView(stand)));
         getMyPlayer().getMyImageView().setX(0);
@@ -333,7 +333,7 @@ public class BattleLevel extends Level{
     }
 
     @Override
-    protected void createEnemyDodgeballer() {
+    public void createEnemyDodgeballer() {
         Image stand = new Image(getClass().getClassLoader().getResourceAsStream("main/resources/images/villainStand.png"));
         villainPlayer = new VillainDodgeballer(0, getMyMoveSpeed(), getMyTossSpeed(), new ImageView(stand));
         villainPlayer.getMyImageView().setX(getMyWidth() - villainPlayer.getMyImageView().getBoundsInLocal().getWidth());
@@ -343,7 +343,7 @@ public class BattleLevel extends Level{
 
     //Add the countdown timer
     @Override
-    protected VBox getTimerButtonVBox() {
+    public VBox getTimerButtonVBox() {
         Button button = new Button();
         button.setText("Start Game!");
         button.setOnAction(e -> {

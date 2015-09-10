@@ -48,21 +48,21 @@ public abstract class Level {
 
     void setUpScene() {}
 
-    abstract Scene init(Stage ps, int w, int h, int l);
+    public abstract Scene init(Stage ps, int w, int h, int l);
 
-    abstract void step(double elapsedTime);
+    public abstract void step(double elapsedTime);
 
-    abstract void handleKeyInput (KeyCode code);
+    public abstract void handleKeyInput (KeyCode code);
 
-    abstract void handleKeyRelease(KeyCode code);
+    public abstract void handleKeyRelease(KeyCode code);
 
-    abstract void setMyLivesHBox(int l);
+    public abstract void setMyLivesHBox(int l);
 
-    abstract void createHeroDodgeballer();
+    public abstract void createHeroDodgeballer();
 
-    abstract void createEnemyDodgeballer();
+    public abstract void createEnemyDodgeballer();
 
-    abstract VBox getTimerButtonVBox();
+    public abstract VBox getTimerButtonVBox();
 
     public void exitLevel(String s) {
         setGameStarted(false);
