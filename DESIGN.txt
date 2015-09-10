@@ -20,7 +20,7 @@ Goal:
     White Goodman by decreasing his lives. Unfairly, Goodman is wearing 'armor' which means that hitting him a single
     time won't destory him, however if he hits you a single time you lose the game. If you manage to hit him with        enough of your own dodgeballs before the time runs out you win!!!
 
-Gaem Controls:
+Game Controls:
 
     -Training Level:
         Up Arrow -> move up
