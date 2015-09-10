@@ -1,6 +1,7 @@
-# game
+# O'Houlihan's Revenge
 First project for CompSci 308 Fall 2015
 
+-----
 Name: Connor Usry
 
 Date started: Thursday August 27, 2015
