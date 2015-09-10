@@ -13,30 +13,26 @@ Goal:
     1) The first level is when Patches O'Houlihan is training our young dodgeballer.  In this level, the goal is to
     survive Patches' harsh training tactics, summarized by his famous 5 D's of dodgeball catch phrase
     "Dodge, Duck, Dip, Dive and Dodge". In order to pass training you must evade patches' attempts to
-    destroy your 3 lives.  If you are hit by either a ball or a wrench you will lose a life or two respectively
-    (from another catchphrase of his... "If you can dodge a wrench, you can dodge a ball"). However if you survive the
-    allotted time you will be deemed worthy and allowed to advance to... level 2!
+    destroy your 3 lives.  If you are hit by a ball you will lose a life or two respectively.  However if you survive     the allotted time you will be deemed worthy and allowed to advance to... level 2!
 
     2) The second level is after the tragic "accident" of Patches' death. In this level you are battling against the
     evil owner of Globogym, White Goodman, in the Las Vegas dodgeball tournament. Here you are trying to defeat
     White Goodman by decreasing his lives. Unfairly, Goodman is wearing 'armor' which means that hitting him a single
-    time won't destory him, however if he hits you a single time you lose the game. If you manage to catch
-    enough of his thrown dodgeballs or hit him with enough of your own, then you win!!!
+    time won't destory him, however if he hits you a single time you lose the game. If you manage to hit him with        enough of your own dodgeballs before the time runs out you win!!!
 
-Basic Mechanics:
-    This game will be framed from a 2-D side perspective (similar to the original Mortal Kombat games). There will be
-    two sides of the screen, left for our player and right for the enemy (Patches in Level 1 & Goodman in level 2).
-    There will be three different dodgeball/wrench throwing options...
-        1) lob -> arched in the air which must be avoided by horizontal movement
-        2) throw -> which must be ducked under
-        3) roll -> which must be jumped over
-    Therefore the player may move side to side and up and down within it's own territory.
-    You may also attempt to catch the ball, with a varying probability of success based on the game scenario.
+Gaem Controls:
 
-    While the enemy will have a constant supply of dodgeballs (received at a varying rate), your supply is limited in
-    the second level. If you run out you must make it to the middle of the court to get more.
+    -Training Level:
+        Up Arrow -> move up
+        Down Arrow -> move down
+        Left Arrow -> move left
+        Right Arrow -> move right
+        Mouse Click -> Hit 'start' to start game
 
-How its levels differ:
-    The first level will be a survival type level, where the only way to win is to wait out the alloted time and survive
-    the attacks.  The second level will be a true battle where, in addition to dodging your enemy's attacks, you
-    must also fight back and destroy the enemy to win.
+    -Battle Level:
+        Up Arrow -> jump
+        Down Arrow -> duck
+        Left Arrow -> move left
+        Right Arrow-> move right
+        Spacebar -> throw ball (if already picked one up)
+        Mouse Click -> Hit 'start' to start game
